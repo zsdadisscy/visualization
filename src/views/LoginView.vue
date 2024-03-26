@@ -1,5 +1,6 @@
 <template>
-    <div class="background">
+    <BackGround>
+        
         <div class="login-box">
             <h2>登录</h2>
             <a-form
@@ -38,7 +39,7 @@
                 <a-form-item name="remember" no-style>
                     <a-checkbox v-model:checked="formState.remember" style="margin-left: 22px;">记住我</a-checkbox>
                 </a-form-item>
-                <a class="login-form-forgot" href="">忘记密码</a>
+                <router-link class="login-form-forgot" to="findpassword">忘记密码</router-link>
                 </a-form-item>
 
                 <a-form-item>
@@ -47,62 +48,58 @@
                 </a-button>
                 <br>
                 <div class="jump">没有账号？
-                    <a href="" style="color: red;">立即注册</a>
+                    <router-link to= 'register' style="color: red;">立即注册</router-link>
                 </div>
                 </a-form-item>
             </a-form>
         </div>
-    </div>
+    </BackGround>
 </template>
 <script >
-
+// import IPADDRESS from '../main.js'
 import { reactive, computed } from 'vue';
-    export default {
-        name: 'LoginView',
-    
-    setup() {
-        const formState = reactive({
-            username: '',
-            password: '',
-            remember: true,
-        });
-        const onFinish = values => {
-            console.log('Success:', values);
-        };
-        const onFinishFailed = errorInfo => {
-            console.log('Failed:', errorInfo);
-        };
-        const disabled = computed(() => {
-            return !(formState.username && formState.password);
-        });
-        return {
-            formState,
-            onFinish,
-            onFinishFailed,
-            disabled,
-        };
-    }
+import BackGround from '../components/BackGround.vue';
+
+export default {
+    name: 'LoginView',
+    components: {
+        BackGround,
+    },
+setup() {
+    const formState = reactive({
+        username: '',
+        password: '',
+        remember: false,
+    });
+    const onFinish = values => {
+        let { username, password } = values;
+        console.log('Success:', username, password);
+
+    };
+    const onFinishFailed = errorInfo => {
+        console.log('Failed:', errorInfo);
+    };
+    const disabled = computed(() => {
+        return !(formState.username && formState.password);
+    });
+    return {
+        formState,
+        onFinish,
+        onFinishFailed,
+        disabled,
+        BackGround
+    };
+}
 };
 </script>
 
 <style scoped>
-
-    .background {
-        width: 100vw;
-        height: 100vh;
-        position: absolute;
-        background: url('../../public/images/login_background.png');
-        background-position: center center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        background-size: cover;
-        
-    }
     .login-box {
         position: absolute;
         top: 50%;
-        left: 50%;
-        width: 400px;
+        left: 83%;
+        width: 350px;
+        height: 400px;
         padding: 40px;
         transform: translate(-50%, -50%);
         background: rgba(178, 177, 177, 0.5);
