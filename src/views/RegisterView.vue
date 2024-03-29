@@ -3,6 +3,7 @@
         
         <div class="register-box">
             <h2>注册</h2>
+
             <a-form
                 :model="formState"
                 name="normal_register"
@@ -46,6 +47,30 @@
                 </a-input-password>
                 </a-form-item>
 
+                <a-form-item
+                label="密保问题"
+                name="password_question"
+                :rules="[{ required: true, message: '请输入你的密保问题！' }]"
+                >
+                <a-input v-model:value="formState.password_question">
+                    <template #prefix>
+                    <LockOutlined class="site-form-item-icon" />
+                    </template>
+                </a-input>
+                </a-form-item>
+
+                <a-form-item
+                label="密保答案"
+                name="password_answer"
+                :rules="[{ required: true, message: '请输入你的密保答案！' }]"
+                >
+                <a-input v-model:value="formState.password_answer">
+                    <template #prefix>
+                    <LockOutlined class="site-form-item-icon" />
+                    </template>
+                </a-input>
+                </a-form-item>
+
                 <a-form-item>
                 <a-button :disabled="disabled" block=false type="primary" html-type="submit" class="register-form-button" >
                     注册
@@ -63,6 +88,10 @@
 // import IPADDRESS from '../main.js'
 import { reactive, computed } from 'vue';
 import BackGround from '../components/BackGround.vue';
+import $ from 'jquery';
+import { useStore } from 'vuex';
+// import router from '@/router/index.js';
+import encrypt from '../user_function/user.js';
 
 export default {
     name: 'RegisterView',
@@ -70,14 +99,65 @@ export default {
         BackGround,
     },
 setup() {
+    const store = useStore();
     const formState = reactive({
         username: '',
         password: '',
         confirm_password: '',
+        password_question: '',
+        password_answer: '',
     });
     const onFinish = values => {
-        let { username, password } = values;
-        console.log('Success:', username, password, values);
+        let{username, password, confirm_password, password_question, password_answer} = values;
+        if (password !== confirm_password) {
+            alert('两次密码不一致');
+            return;
+        }
+        // 添加密码校验，不低于8位，同时有字母和数字
+        // let reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/;
+        // if (!reg.test(password)) {
+        //     alert('密码不符合规范');
+        //     return;
+        // }
+        if (username && password && confirm_password && password_question && password_answer) {
+
+            $.ajax({
+                url: 'http://47.105.178.110:8000/user/register',
+                type: 'post',
+                data: {
+                    username: username,
+                    password: encrypt(password),
+                    password_question: password_question,
+                    password_answer: password_answer,
+                    confirm_password: encrypt(confirm_password)
+                },
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                success(resp) {
+                    console.log(resp);
+                    if (resp.result === 'success') {
+                        store.dispatch('login', {
+                            username: username,
+                            password: password,
+                        success() {
+                            // router.push({name: 'userlist'});
+                            console.log('注册成功');
+                        },
+                        error() {
+                            alert('系统异常，请稍后再试');
+                        }
+                        })
+                    }
+                    else {
+                        alert(resp.msg);
+                    }
+                    }
+            })
+        }
+        else {
+            alert('未知错误');
+        }
 
     };
     const onFinishFailed = errorInfo => {
@@ -91,7 +171,7 @@ setup() {
         onFinish,
         onFinishFailed,
         disabled,
-        BackGround
+        BackGround,
     };
 }
 };
@@ -103,7 +183,7 @@ setup() {
         top: 50%;
         left: 83%;
         width: 350px;
-        height: 400px;
+        height: 510px;
         padding: 40px;
         transform: translate(-50%, -50%);
         background: rgba(178, 177, 177, 0.5);
