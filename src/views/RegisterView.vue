@@ -99,6 +99,7 @@ export default {
         BackGround,
     },
 setup() {
+
     const store = useStore();
     const formState = reactive({
         username: '',
@@ -124,28 +125,28 @@ setup() {
             $.ajax({
                 url: 'http://47.105.178.110:8000/user/register',
                 type: 'post',
-                data: {
+                data: JSON.stringify({
                     username: username,
                     password: encrypt(password),
                     password_question: password_question,
                     password_answer: password_answer,
-                    confirm_password: encrypt(confirm_password)
-                },
+                    confirm_password: encrypt(confirm_password),
+                }),
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 success(resp) {
-                    console.log(resp);
                     if (resp.result === 'success') {
+                        alert('注册成功');
                         store.dispatch('login', {
                             username: username,
                             password: password,
                         success() {
                             // router.push({name: 'userlist'});
-                            console.log('注册成功');
+                            alert('登录成功');
                         },
-                        error() {
-                            alert('系统异常，请稍后再试');
+                        error(msg) {
+                            alert(msg);
                         }
                         })
                     }

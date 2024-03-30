@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import jwt_decode from 'jwt-decode';
+// import {jwtDecode} from 'jwt-decode';
 import encrypt from '../user_function/user.js'
 
 
@@ -58,22 +58,26 @@ const ModeuleUser = {
             $.ajax({
                 url: 'http://47.105.178.110:8000/user/login',
                 type: 'POST',
-                data : {
+                data : JSON.stringify({
                     username: data.username,
                     password: encrypt(data.password),
+                }),
+                headers: {
+                    'Content-Type': 'application/json'
                 },
                 success(resp) {
                     const {access, refresh} = resp;
-                    // 进行解码
-                    const access_obj = jwt_decode(access);
-                    console.log(access_obj);
+
                     // 定时函数
                     setInterval(() => {
                         $.ajax({
                             url: 'http://47.105.178.110:8000/user/refresh',
                             type: 'post',
-                            data: {
-                                "refresh_tokern":refresh
+                            data: JSON.stringify({
+                                "refresh_token":refresh
+                            }),
+                            headers: {
+                                'Content-Type': 'application/json'
                             },
                             success(resp) {
                                 // 调用mutations函数
@@ -82,27 +86,29 @@ const ModeuleUser = {
                         });
                     }, 55 * 60 * 1000);
                     $.ajax ({
-                        url: 'https://app165.acapp.acwing.com.cn/myspace/getinfo/',
+                        url: 'http://47.105.178.110:8000/user/get_info',
                         type: 'GET',
-                        data: {
-                            username: access_obj.user_id,
-                        },
                         headers: {
                             'Authorization': 'Bearer ' + access,
+                            'Content-Type': 'application/json'
                         },
                         success(resp) {
-                            context.commit('updateUser', {
-                                ...resp, 
-                                access: access,
-                                refresh: refresh,
-                                is_login: true,
-                            });
-                            data.success();
+                            if (resp.result === 'success') {
+                                context.commit('updateUser', {
+                                    ...resp, 
+                                    access: access,
+                                    refresh: refresh,
+                                    is_login: true,
+                                });
+                                data.success('获取信息成功');
+                            }
+                            else
+                                data.success(resp.msg);
                         }
                     })
                 },
                 error() {
-                    data.error();
+                    data.error('连接失败');
                 }
             });
         }
