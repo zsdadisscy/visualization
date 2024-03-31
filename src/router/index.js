@@ -1,14 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
-import FindPassword from '../views/FindPassword.vue'
+import FindPasswordView from '../views/FindPasswordView.vue'
+import HomeView from '../views/Homeview.vue'
+import NotFoundView from '../views/NotFoundView.vue'
 
 const routes = [
   {
     path: '/',
-    name: 'login',
+    name: 'login/',
     component: LoginView,
-    alias: '/login',
+    alias: '/login/',
     title: '登录'
   },
   {
@@ -20,8 +22,23 @@ const routes = [
   {
     path: '/findpassword/',
     name: 'findpassword',
-    component: FindPassword,
+    component: FindPasswordView,
     title: '找回密码'
+  },
+  {
+    path: '/home/',
+    name: 'home',
+    component: HomeView,
+    title: '首页'
+  },
+  {
+    path: '/404/',
+    name: '404',
+    component: NotFoundView,
+  },
+  {
+    path: '/:catchAll(.*)',
+    redirect: '/404/'
   }
 ]
 

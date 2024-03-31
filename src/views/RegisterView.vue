@@ -90,7 +90,7 @@ import { reactive, computed } from 'vue';
 import BackGround from '../components/BackGround.vue';
 import $ from 'jquery';
 import { useStore } from 'vuex';
-// import router from '@/router/index.js';
+import router from '@/router/index.js';
 import encrypt from '../user_function/user.js';
 
 export default {
@@ -108,6 +108,9 @@ setup() {
         password_question: '',
         password_answer: '',
     });
+    if (store.state.user.is_login) {
+        router.push({name: 'home'});
+    }
     const onFinish = values => {
         let{username, password, confirm_password, password_question, password_answer} = values;
         if (password !== confirm_password) {
@@ -142,13 +145,13 @@ setup() {
                             username: username,
                             password: password,
                         success() {
-                            // router.push({name: 'userlist'});
-                            alert('登录成功');
+                             router.push({name: 'home'});
                         },
                         error(msg) {
                             alert(msg);
+                            console.log(msg);
                         }
-                        })
+                        });
                     }
                     else {
                         alert(resp.msg);

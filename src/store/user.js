@@ -66,46 +66,49 @@ const ModeuleUser = {
                     'Content-Type': 'application/json'
                 },
                 success(resp) {
-                    const {access, refresh} = resp;
-
-                    // 定时函数
-                    setInterval(() => {
-                        $.ajax({
-                            url: 'http://47.105.178.110:8000/user/refresh',
-                            type: 'post',
-                            data: JSON.stringify({
-                                "refresh_token":refresh
-                            }),
+                    if (resp.result === 'success') {
+                        const {access, refresh} = resp;
+                        // console.log(access, refresh);
+                        // 定时函数
+                        setInterval(() => {
+                            $.ajax({
+                                url: 'http://47.105.178.110:8000/user/refresh',
+                                type: 'post',
+                                
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': 'Bearer ' + refresh,
+                                },
+                                success(resp) {
+                                    // 调用mutations函数
+                                    context.commit('updateAccess', resp.access);
+                                }
+                            });
+                        }, 55 * 60 * 1000);
+                        $.ajax ({
+                            url: 'http://47.105.178.110:8000/user/get_info',
+                            type: 'GET',
                             headers: {
+                                'Authorization': 'Bearer ' + access,
                                 'Content-Type': 'application/json'
                             },
                             success(resp) {
-                                // 调用mutations函数
-                                context.commit('updateAccess', resp.access);
+                                if (resp.result === 'success') {
+                                    context.commit('updateUser', {
+                                        ...resp, 
+                                        access: access,
+                                        refresh: refresh,
+                                        is_login: true,
+                                    });
+                                    data.success();
+                                }
+                                else
+                                    data.error('用户名或密码错误');
                             }
-                        });
-                    }, 55 * 60 * 1000);
-                    $.ajax ({
-                        url: 'http://47.105.178.110:8000/user/get_info',
-                        type: 'GET',
-                        headers: {
-                            'Authorization': 'Bearer ' + access,
-                            'Content-Type': 'application/json'
-                        },
-                        success(resp) {
-                            if (resp.result === 'success') {
-                                context.commit('updateUser', {
-                                    ...resp, 
-                                    access: access,
-                                    refresh: refresh,
-                                    is_login: true,
-                                });
-                                data.success('获取信息成功');
-                            }
-                            else
-                                data.success(resp.msg);
-                        }
-                    })
+                        })
+                    }
+                    else
+                        data.error(resp.msg);
                 },
                 error() {
                     data.error('连接失败');

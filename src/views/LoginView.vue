@@ -59,6 +59,8 @@
 // import IPADDRESS from '../main.js'
 import { reactive, computed } from 'vue';
 import BackGround from '../components/BackGround.vue';
+import {useStore} from 'vuex';
+import router from '@/router/index';
 
 export default {
     name: 'LoginView',
@@ -71,10 +73,51 @@ setup() {
         password: '',
         remember: false,
     });
-    const onFinish = values => {
-        let { username, password } = values;
-        console.log('Success:', username, password);
+    const store = useStore();
+    if (store.state.user.is_login) {
+        router.push({name: 'home'});
+    }
+    if (localStorage.getItem('remember')) {
+        formState.username = localStorage.getItem('username');
+        formState.password = localStorage.getItem('password');
+        console.log(formState.username);
+        store.dispatch('login', {
+            username: formState.username,
+            password: formState.password,
+            success() {
+                router.push({name: 'home'});
+            },
+            error(msg) {
+                alert(msg);
+            }
+        });
+    }
 
+    const onFinish = values => {
+        let { username, password, remember } = values;
+
+        store.dispatch('login', {
+            username: username,
+            password: password,
+            success() {
+                alert('登录成功');
+                if (remember) {
+                    localStorage.setItem('username', username);
+                    localStorage.setItem('password', password);
+                    localStorage.setItem('remember', remember);
+                }
+                if (!remember) {
+                    localStorage.removeItem('username');
+                    localStorage.removeItem('password');
+                    localStorage.removeItem('remember');
+                }
+                router.push({name: 'home'});
+            },
+            error(msg) {
+                alert(msg);
+            }
+        });
+        
     };
     const onFinishFailed = errorInfo => {
         console.log('Failed:', errorInfo);
