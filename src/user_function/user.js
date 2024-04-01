@@ -20,5 +20,37 @@ function encrypt(word) {
   return CryptoJS.enc.Base64.stringify(encrypted.ciphertext);
 }
 
-export default encrypt;
+// 判断用户是否在线
+import { useStore  } from 'vuex';
+import $ from 'jquery'
+
+function judge_online() {
+  const store = useStore();
+  let suc = false;
+  if (store.state.user.is_login) {
+    $.ajax({
+      url: "http://47.105.178.110:8000/user/judge_online",
+      type: "get",
+      async: false,
+      headers: {
+        'Authorization': 'Bearer ' + store.state.user.access,
+      },
+      success(resp) {
+
+          if (resp.result === 'success') 
+            suc = true;
+      },
+      error(resp) {
+          console.log('失败', resp);
+      }
+    });
+  }
+  if (suc)
+      return true;
+
+  store.state.user.is_login = false;
+  return false;
+}
+
+export { encrypt, judge_online};
 

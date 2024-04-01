@@ -1,7 +1,12 @@
 import { createStore } from 'vuex'
 import ModeuleUser from './user';
+import createPersistedState from 'vuex-persistedstate'
 
+// 存在seession，以防刷新没了
 export default createStore({
+  plugins:[createPersistedState({
+    storage:window.sessionStorage
+  })],
   state: {
     // 储存的数据
   },

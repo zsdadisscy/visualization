@@ -1,5 +1,5 @@
 <template>
-    <BackGround>
+    <BackGround :is_text="true">
         
         <div class="login-box">
             <h2>登录</h2>
@@ -61,6 +61,7 @@ import { reactive, computed } from 'vue';
 import BackGround from '../components/BackGround.vue';
 import {useStore} from 'vuex';
 import router from '@/router/index';
+import { judge_online } from '@/user_function/user';
 
 export default {
     name: 'LoginView',
@@ -74,10 +75,12 @@ setup() {
         remember: false,
     });
     const store = useStore();
-    if (store.state.user.is_login) {
+
+    if (judge_online()) {
+        console.log('执行跳转到home');
         router.push({name: 'home'});
     }
-    if (localStorage.getItem('remember')) {
+    if (localStorage.getItem('remember') === 'true') {
         formState.username = localStorage.getItem('username');
         formState.password = localStorage.getItem('password');
         console.log(formState.username);

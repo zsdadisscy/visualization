@@ -1,5 +1,5 @@
 <template>
-    <BackGround>
+    <BackGround :is_text="true">
         
         <div class="register-box">
             <h2>注册</h2>
@@ -91,7 +91,7 @@ import BackGround from '../components/BackGround.vue';
 import $ from 'jquery';
 import { useStore } from 'vuex';
 import router from '@/router/index.js';
-import encrypt from '../user_function/user.js';
+import { judge_online, encrypt } from '../user_function/user.js';
 
 export default {
     name: 'RegisterView',
@@ -108,7 +108,7 @@ setup() {
         password_question: '',
         password_answer: '',
     });
-    if (store.state.user.is_login) {
+    if (judge_online()) {
         router.push({name: 'home'});
     }
     const onFinish = values => {
@@ -117,12 +117,12 @@ setup() {
             alert('两次密码不一致');
             return;
         }
-        // 添加密码校验，不低于8位，同时有字母和数字
-        // let reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/;
-        // if (!reg.test(password)) {
-        //     alert('密码不符合规范');
-        //     return;
-        // }
+        //  添加密码校验，不低于8位，同时有字母和数字
+        let reg = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{8,16}$/;
+        if (!reg.test(password)) {
+            alert('密码不符合规范，密码至少8位，同时包含字母和数字');
+            return;
+        }
         if (username && password && confirm_password && password_question && password_answer) {
 
             $.ajax({

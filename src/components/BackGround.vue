@@ -1,7 +1,6 @@
 <template>
     <div class="background">
-        <div class="title"><h1>大学生就业分析与推荐可视化系统</h1></div>
-        
+        <div class="title" v-if="is_text"><h1>大学生就业分析与推荐可视化系统</h1></div>
         
         <slot></slot>
     </div>
@@ -11,7 +10,12 @@
 
 export default {
     name: 'BackGround',
-    
+    props: {
+        is_text: {
+            type: Object,
+            required: true,
+        }
+    },
 };
 </script>
 

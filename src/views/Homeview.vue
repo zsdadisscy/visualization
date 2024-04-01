@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h1>Home</h1>
+        <MenuComponent/>
     </div>
 </template>
 
@@ -8,18 +8,21 @@
 import $ from 'jquery';
 import {useStore} from 'vuex';
 import router from '../router/index';
-
+import { judge_online } from '@/user_function/user';
+import MenuComponent from '@/components/MenuComponent.vue';
 
 export default {
     name: 'HomeView',
     components: {
-        // Your component's name goes here
+        MenuComponent,
     },
     setup() {
         const store = useStore();
-        if (!store.state.user.is_login) {
+
+        if (!judge_online()) {
             router.push('/login');
         }
+        
         $.ajax({
             url: "http://47.105.178.110:8000/user/get_status",
             type: "get",
@@ -41,7 +44,10 @@ export default {
             },
             error(resp) {
                 console.log(resp);
-                alert('系统错误');
+                if (resp.msg !== '')
+                    router.push('/login');
+                else
+                    alert('系统错误');
             }
         });
     }

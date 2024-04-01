@@ -1,6 +1,6 @@
 import $ from 'jquery';
 // import {jwtDecode} from 'jwt-decode';
-import encrypt from '../user_function/user.js'
+import {encrypt} from '../user_function/user.js'
 
 
 const ModeuleUser = {
@@ -68,7 +68,6 @@ const ModeuleUser = {
                 success(resp) {
                     if (resp.result === 'success') {
                         const {access, refresh} = resp;
-                        // console.log(access, refresh);
                         // 定时函数
                         setInterval(() => {
                             $.ajax({
