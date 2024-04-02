@@ -24,7 +24,7 @@
                     >
                     <a-input v-model:value="formState.password_question" disabled>
                         <template #prefix>
-                        <LockOutlined class="site-form-item-icon" />
+                        
                         </template>
                     </a-input>
                 </a-form-item>
@@ -35,7 +35,7 @@
                     >
                     <a-input v-model:value="formState.password_answer">
                         <template #prefix>
-                        <UserOutlined class="site-form-item-icon" />
+                        
                         </template>
                     </a-input>
                 </a-form-item>

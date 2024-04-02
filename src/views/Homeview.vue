@@ -1,7 +1,7 @@
 <template>
-    <div>
-        <MenuComponent/>
-    </div>
+    <MenuComponent>
+        
+    </MenuComponent>
 </template>
 
 <script>
@@ -55,5 +55,5 @@ export default {
 </script>
 
 <style scoped>
-/* Your component's CSS styles go here */
+
 </style>

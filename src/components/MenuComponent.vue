@@ -1,53 +1,77 @@
 <template>
-    <a-menu
-      id="dddddd"
-      v-model:openKeys="openKeys"
-      v-model:selectedKeys="selectedKeys"
-      style="width: 256px"
-      mode="inline"
-      :items="items"
-      @click="handleClick"
-    ></a-menu>
-  </template>
-  <script setup>
-  import { reactive, ref, watch, h } from 'vue';
-  import { MailOutlined, AppstoreOutlined, SettingOutlined } from '@ant-design/icons-vue';
-  const selectedKeys = ref(['1']);
-  const openKeys = ref(['sub1']);
-  function getItem(label, key, icon, children, type) {
-    return {
-      key,
-      icon,
-      children,
-      label,
-      type,
-    };
-  }
-  const items = reactive([
-    getItem('Navigation One', 'sub1', () => h(MailOutlined), [
-      getItem('Item 1', 'g1', null, [getItem('Option 1', '1'), getItem('Option 2', '2')], 'group'),
-      getItem('Item 2', 'g2', null, [getItem('Option 3', '3'), getItem('Option 4', '4')], 'group'),
-    ]),
-    getItem('Navigation Two', 'sub2', () => h(AppstoreOutlined), [
-      getItem('Option 5', '5'),
-      getItem('Option 6', '6'),
-      getItem('Submenu', 'sub3', null, [getItem('Option 7', '7'), getItem('Option 8', '8')]),
-    ]),
-    {
-      type: 'divider',
-    },
-    getItem('Navigation Three', 'sub4', () => h(SettingOutlined), [
-      getItem('Option 9', '9'),
-      getItem('Option 10', '10'),
-      getItem('Option 11', '11'),
-      getItem('Option 12', '12'),
-    ]),
-    getItem('Group', 'grp', null, [getItem('Option 13', '13'), getItem('Option 14', '14')], 'group'),
-  ]);
-  const handleClick = e => {
-    console.log('click', e);
-  };
-  watch(openKeys, val => {
-    console.log('openKeys', val);
-  });
-  </script>
+  <a-layout id="components-layout-demo-custom-trigger">
+    <a-layout-sider v-model:collapsed="collapsed" :trigger="null" collapsible width="300px">
+      <div class="logo"> 
+        <img v-if="collapsed" src="../../public/images/data.svg" alt="logo" style="width: 45px; margin-top: -15px; margin-left: 0px;"/>
+        <h3 v-if="!collapsed">&nbsp;&nbsp;大学生就业分析与推荐可视化系统</h3>
+        </div>
+      <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline">
+        <a-menu-item key="1">
+          <user-outlined />
+          <span>nav 1</span>
+        </a-menu-item>
+        <a-menu-item key="2">
+          <video-camera-outlined />
+          <span>nav 2</span>
+        </a-menu-item>
+        <a-menu-item key="3">
+          <upload-outlined />
+          <span>nav 3</span>
+        </a-menu-item>
+      </a-menu>
+    </a-layout-sider>
+    <a-layout>
+      <a-layout-header style="background: #fff; padding: 0">
+        <menu-unfold-outlined
+          v-if="collapsed"
+          class="trigger"
+          @click="() => (collapsed = !collapsed)"
+        />
+        <menu-fold-outlined v-else class="trigger" @click="() => (collapsed = !collapsed)" />
+      </a-layout-header>
+      <a-layout-content
+        :style="{ margin: '24px 16px', padding: '24px', background: '#fff', minHeight: '280px' }"
+      >
+        Content
+      </a-layout-content>
+    </a-layout>
+  </a-layout>
+</template>
+<script setup>
+
+import { ref } from 'vue';
+
+const selectedKeys = ref(['1']);
+const collapsed = ref(false);
+
+</script>
+
+
+<style>
+#components-layout-demo-custom-trigger {
+  height: 100vh;
+
+}
+
+#components-layout-demo-custom-trigger .trigger {
+  font-size: 18px;
+  line-height: 64px;
+  padding: 0 24px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+#components-layout-demo-custom-trigger .trigger:hover {
+  color: #1890ff;
+}
+
+#components-layout-demo-custom-trigger .logo {
+  height: 32px;
+  color: white;
+  margin: 16px;
+}
+
+.site-layout .site-layout-background {
+  background: #fff;
+}
+</style>
