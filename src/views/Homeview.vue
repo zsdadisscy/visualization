@@ -1,6 +1,6 @@
 <template>
     <MenuComponent>
-        
+        首页
     </MenuComponent>
 </template>
 

@@ -48,7 +48,7 @@ function judge_online() {
   if (suc)
       return true;
 
-  store.state.user.is_login = false;
+  store.commit('logout');
   return false;
 }
 

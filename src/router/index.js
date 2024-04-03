@@ -4,6 +4,9 @@ import RegisterView from '../views/RegisterView.vue'
 import FindPasswordView from '../views/FindPasswordView.vue'
 import HomeView from '../views/Homeview.vue'
 import NotFoundView from '../views/NotFoundView.vue'
+import EditorInfoView from '../views/EditorInfoView.vue'
+import ModifyPasswordView from '../views/ModifyPasswordView.vue'
+import ModifyProtectionView from '@/views/ModifyProtectionView.vue'
 
 const routes = [
   {
@@ -30,6 +33,24 @@ const routes = [
     name: 'home',
     component: HomeView,
     title: '首页'
+  },
+  {
+    path: '/editorinfo/',
+    name: 'editorinfo',
+    component: EditorInfoView,
+    title: '编辑资料'
+  },
+  {
+    path: '/modifypassword/',
+    name: 'modifypasswordview',
+    component: ModifyPasswordView,
+    title: '修改密码',
+  },
+  {
+    path: '/modifyprotection/',
+    name: 'modifyprotection',
+    component: ModifyProtectionView,
+    title: '修改密保',
   },
   {
     path: '/404/',
