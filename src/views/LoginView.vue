@@ -83,17 +83,7 @@ setup() {
     if (localStorage.getItem('remember') === 'true') {
         formState.username = localStorage.getItem('username');
         formState.password = localStorage.getItem('password');
-        console.log(formState.username);
-        store.dispatch('login', {
-            username: formState.username,
-            password: formState.password,
-            success() {
-                router.push({name: 'home'});
-            },
-            error(msg) {
-                alert(msg);
-            }
-        });
+        formState.remember = true;
     }
 
     const onFinish = values => {

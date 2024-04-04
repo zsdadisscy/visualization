@@ -1,5 +1,5 @@
 <template>
-    <MenuComponent>
+    <MenuComponent :title_text="'修改密码'">
         修改密码
     </MenuComponent>
 </template>

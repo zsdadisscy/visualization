@@ -1,5 +1,5 @@
 <template>
-    <MenuComponent>
+    <MenuComponent :title_text="'编辑资料'">
         <a-form
             ref="formRef"
             :model="formState"
@@ -16,10 +16,10 @@
                     <a-radio value="女">女</a-radio>
                 </a-radio-group>
             </a-form-item>
-            <a-form-item has-feedback label="Age" name="age">
+            <a-form-item has-feedback label="年龄" name="age">
                 <a-input-number v-model:value="formState.age" />
             </a-form-item>
-            <a-form-item label="专业">
+            <a-form-item label="专业" name="major">
                 <a-input v-model:value="formState.major" />
             </a-form-item>
             <a-form-item label="学历" name="education">
@@ -33,10 +33,10 @@
             </a-radio-group>
             </a-form-item>
             
-            <a-form-item label="兴趣岗位">
+            <a-form-item label="兴趣岗位" name="interest_position">
                 <a-input v-model:value="formState.interest_position" />
             </a-form-item>
-            <a-form-item label="兴趣城市">
+            <a-form-item label="兴趣城市" name="interest_city">
                 <a-input v-model:value="formState.interest_city" />
             </a-form-item>
 
@@ -47,15 +47,18 @@
                     list-type="picture-card"
                     class="avatar-uploader"
                     :show-upload-list="false"
-                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                    action="http://47.105.178.110:8000/user/upload_avatar"
+                    :maxCount="1"
+                    :method="post"
+                    :headers = headers
                     :before-upload="beforeUpload"
                     @change="handleChange"
                 >
-                    <img v-if="imageUrl" :src="imageUrl" alt="avatar" />
+                    <img v-if="imageUrl" :src="imageUrl" alt="avatar" class="img-icon"/>
                     <div v-else>
                     <loading-outlined v-if="loading"></loading-outlined>
                     <plus-outlined v-else></plus-outlined>
-                    <div class="ant-upload-text">Upload</div>
+                    <div class="ant-upload-text">上传</div>
                     </div>
                 </a-upload>
 
@@ -76,6 +79,7 @@ import { reactive, ref, toRaw } from 'vue';
 import {useStore} from 'vuex';
 import router from '../router/index';
 import { message } from 'ant-design-vue';
+import $ from 'jquery';
 
 export default {
     name: 'EditorInfoView',
@@ -101,106 +105,168 @@ export default {
             education: store.state.user.education,
             avatar: store.state.user.avatar,
         });
+        console.log(formState);
+        const headers = {
+            'Authorization': 'Bearer ' + store.state.user.access,
+        }
         const rules = {
         name: [
             {
             required: true,
-            message: 'Please input Activity name',
+            message: '请输入你的名字',
             trigger: 'change',
             },
             {
-            min: 3,
-            max: 5,
-            message: 'Length should be 3 to 5',
             trigger: 'blur',
             },
         ],
-        region: [
+        age: [
             {
             required: true,
-            message: 'Please select Activity zone',
+            message: '请选择你的年龄',
+            trigger: 'change',
+            type: 'number',
+            },
+        ],
+        major: [
+            {
+            required: true,
+            message: '请输入你的专业',
             trigger: 'change',
             },
         ],
-        date1: [
+        gender: [
             {
             required: true,
-            message: 'Please pick a date',
-            trigger: 'change',
-            type: 'object',
-            },
-        ],
-        type: [
-            {
-            type: 'array',
-            required: true,
-            message: 'Please select at least one activity type',
+            message: '请选择性别',
             trigger: 'change',
             },
         ],
-        resource: [
+        interest_position: [
             {
             required: true,
-            message: 'Please select activity resource',
+            message: '请输入你的兴趣岗位',
             trigger: 'change',
             },
         ],
-        desc: [
+        interest_city: [
             {
             required: true,
-            message: 'Please input activity form',
+            message: '请输入你的兴趣城市',
+            trigger: 'blur',
+            },
+        ],
+        education: [
+            {
+            required: true,
+            message: '请选择你的学历',
             trigger: 'blur',
             },
         ],
         };
+
+
+        // 提交函数
         const onSubmit = () => {
-        formRef.value
-            .validate()
-            .then(() => {
-            console.log('values', formState, toRaw(formState));
-            })
-            .catch(error => {
-            console.log('error', error);
-            });
+            formRef.value
+                .validate()
+                .then(() => {
+                    let {name, age, major, gender, interest_position, interest_city, education} = toRaw(formState);
+                    $.ajax({
+                        url: 'http://47.105.178.110:8000/user/mod_info',
+                        type: 'post',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            "Authorization": 'Bearer ' + store.state.user.access,
+                        },
+                        data: JSON.stringify({
+                            name: name,
+                            age: age,
+                            major: major,
+                            gender,
+                            interest_position,
+                            interest_city,
+                            education,
+                        }),
+                        success(resp) {
+                            if (resp.result === 'success') {
+                                // 修改成功后，更新store中的数据
+                                $.ajax ({
+                                    url: 'http://47.105.178.110:8000/user/get_info',
+                                    type: 'GET',
+                                    headers: {
+                                        'Authorization': 'Bearer ' + store.state.user.access,
+                                        'Content-Type': 'application/json'
+                                    },
+                                    success: (resp) => {
+                                        if (resp.result === 'success') {
+                                            store.commit('updateInfo', {
+                                                ...resp.data, 
+                                            });
+                                            alert('修改成功');
+                                            // router.push('/home');
+                                        }
+                                        else
+                                            alert('修改失败，请稍后再试');
+                                    },   
+                                })
+                            }
+                            else {
+                                alert(resp.msg);
+                            }
+                        },
+                        error(resp) {
+                            console.log(resp);
+                            alert('系统错误，请稍后再试');
+                        }
+                    })
+                })
+                .catch(error => {
+                    console.log('error', error);
+                    alert('修改失败，请稍后再试');
+                });
+  
         };
         const goback = () => {
             router.go(-1);
         };
+
+        // 上传图片服务
         function getBase64(img, callback) {
-        const reader = new FileReader();
-        reader.addEventListener('load', () => callback(reader.result));
-        reader.readAsDataURL(img);
+            const reader = new FileReader();
+            reader.addEventListener('load', () => callback(reader.result));
+            reader.readAsDataURL(img);
         }
         const fileList = ref([]);
         const loading = ref(false);
         const imageUrl = ref('');
         const handleChange = info => {
-        if (info.file.status === 'uploading') {
-            loading.value = true;
-            return;
-        }
-        if (info.file.status === 'done') {
-            // Get this url from response in real world.
-            getBase64(info.file.originFileObj, base64Url => {
-            imageUrl.value = base64Url;
-            loading.value = false;
-            });
-        }
-        if (info.file.status === 'error') {
-            loading.value = false;
-            message.error('upload error');
+            if (info.file.status === 'uploading') {
+                loading.value = true;
+                return;
+            }
+            if (info.file.status === 'done') {
+                // Get this url from response in real world.
+                getBase64(info.file.originFileObj, base64Url => {
+                imageUrl.value = base64Url;
+                loading.value = false;
+                });
+            }
+            if (info.file.status === 'error') {
+                loading.value = false;
+                message.error('上传错误');
         }
         };
         const beforeUpload = file => {
-        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-        if (!isJpgOrPng) {
-            message.error('You can only upload JPG file!');
-        }
-        const isLt2M = file.size / 1024 / 1024 < 2;
-        if (!isLt2M) {
-            message.error('Image must smaller than 2MB!');
-        }
-        return isJpgOrPng && isLt2M;
+            const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+            if (!isJpgOrPng) {
+                message.error('你尽可以上传jepeg或者png格式的图片');
+            }
+            const isLt2M = file.size / 1024 / 1024 < 2;
+            if (!isLt2M) {
+                message.error('你仅可以上传小于2M的图片');
+            }
+            return isJpgOrPng && isLt2M;
         };
         return {
             formRef,
@@ -215,6 +281,8 @@ export default {
             imageUrl,
             handleChange,
             beforeUpload,
+            headers,
+
         };
     }
 }
@@ -233,5 +301,9 @@ export default {
 .ant-upload-select-picture-card .ant-upload-text {
   margin-top: 8px;
   color: #666;
+}
+.img-icon {
+  width: 128px;
+  height: 128px;
 }
 </style>

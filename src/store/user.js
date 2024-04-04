@@ -36,6 +36,16 @@ const ModeuleUser = {
             state.refresh = user.refresh;
             state.is_login = user.is_login;
         },
+        updateInfo(state, user) {
+            state.name = user.name;
+            state.gender = user.gender;
+            state.age = user.age;
+            state.major = user.major;
+            state.interest_position = user.interest_position;
+            state.interest_city = user.interest_city;
+            state.education = user.education;
+            state.avatar = user.avatar;
+        },
         updateAccess(state, access) {
             state.access = access;
         },
@@ -94,7 +104,7 @@ const ModeuleUser = {
                             success(resp) {
                                 if (resp.result === 'success') {
                                     context.commit('updateUser', {
-                                        ...resp, 
+                                        ...resp.data, 
                                         access: access,
                                         refresh: refresh,
                                         is_login: true,

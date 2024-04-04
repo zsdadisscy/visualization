@@ -1,5 +1,5 @@
 <template>
-    <MenuComponent>
+    <MenuComponent :title_text="'首页'">
         首页
     </MenuComponent>
 </template>
