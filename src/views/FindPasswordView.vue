@@ -162,7 +162,7 @@ export default {
         };
         // 返回登录
         const return_login = () => {
-            router.push('/login');
+            router.push({name: 'login'});
         };
         // 提交
         const submit = () => {
@@ -191,7 +191,7 @@ export default {
                 success(resp) {
                     if (resp.result === 'success') {
                         alert('修改成功，即将跳转到登录界面');
-                        router.push('/login');
+                        router.push({name: 'login'});
                     }
                     else {
                         alert(resp.msg);

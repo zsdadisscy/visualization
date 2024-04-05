@@ -1,5 +1,6 @@
 <template>
-    <MenuComponent :title_text="'编辑资料'">
+    <MenuComponent>
+        <div class="modify-info-title">编辑资料</div>
         <a-form
             ref="formRef"
             :model="formState"
@@ -7,6 +8,7 @@
             :label-col="labelCol"
             :wrapper-col="wrapperCol"
         >
+            
             <a-form-item ref="name" label="名字" name="name">
                 <a-input v-model:value="formState.name" />
             </a-form-item>
@@ -40,7 +42,7 @@
                 <a-input v-model:value="formState.interest_city" />
             </a-form-item>
 
-            <a-form-item label="兴趣城市">
+            <a-form-item label="头像">
                 <a-upload
                     v-model:file-list="fileList"
                     name="avatar"
@@ -64,7 +66,7 @@
 
                 <a-form-item :wrapper-col="{ span: 14, offset: 4 }">
                 <a-button @click="goback">返回</a-button>
-                <a-button style="margin-left: 10px" type="primary" @click="onSubmit">修改</a-button>
+                <a-button style="margin-left: 30px" type="primary" @click="onSubmit">修改</a-button>
                 
                 </a-form-item>
             </a-form-item>
@@ -80,6 +82,7 @@ import {useStore} from 'vuex';
 import router from '../router/index';
 import { message } from 'ant-design-vue';
 import $ from 'jquery';
+import { judge_online } from '@/user_function/user';
 
 export default {
     name: 'EditorInfoView',
@@ -88,6 +91,10 @@ export default {
     },
     setup() {
         const store = useStore();
+        if (!judge_online()) {
+            router.push({name: 'login'});
+        }
+
         const formRef = ref();
         const labelCol = {
             span: 5,
@@ -306,4 +313,21 @@ export default {
   width: 128px;
   height: 128px;
 }
+
+
+.modify-info-title {
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+    float: left;
+    align-items: center;
+    justify-content: center;
+    writing-mode: vertical-rl;
+    width: 50px;
+    /* margin-top: 18%; */
+    margin-right: 5%;
+    margin-left: 3%;
+    height: 70%;
+}
+
 </style>

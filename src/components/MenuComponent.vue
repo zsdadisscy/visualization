@@ -33,8 +33,7 @@
           @click="() => (collapsed = !collapsed)"
         />
         <menu-fold-outlined v-else class="trigger" @click="() => (collapsed = !collapsed)" />
-        <!-- 增加标题 -->
-        <div class="title"><h2>{{ title_text }}</h2></div>
+        
         <!-- 头像 -->
         <div class="user-info" @mouseenter="open_info" @mouseleave="close_info">
           <div class='user-avatar'>
@@ -58,6 +57,7 @@
       <a-layout-content
         :style="{ margin: '24px 16px', padding: '24px', background: '#fff', minHeight: '280px' }"
       >
+
         <slot></slot>
       </a-layout-content>
     </a-layout>
@@ -71,12 +71,6 @@ import router from '../router/index';
 
 export default {
   name: 'MenuComponent',
-  props: {
-        title_text: {
-            type: String,
-            required: true,
-        }
-    },
   setup() {
 
     const selectedKeys = ref(['1']);
@@ -95,7 +89,7 @@ export default {
 
     const logout = () => {
       store.commit('logout');
-      router.push('/login');
+      router.push({name :'login'});
     };
 
     return {

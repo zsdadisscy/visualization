@@ -9,11 +9,18 @@ import ModifyPasswordView from '../views/ModifyPasswordView.vue'
 import ModifyProtectionView from '@/views/ModifyProtectionView.vue'
 
 const routes = [
+   {
+    path: '/home/',
+    name: 'home',
+    component: HomeView,
+    alias: '/',
+    title: '首页'
+  },
   {
-    path: '/',
-    name: 'login/',
+    path: '/login/',
+    name: 'login',
     component: LoginView,
-    alias: '/login/',
+    // alias: '/login/',
     title: '登录'
   },
   {
@@ -28,12 +35,7 @@ const routes = [
     component: FindPasswordView,
     title: '找回密码'
   },
-  {
-    path: '/home/',
-    name: 'home',
-    component: HomeView,
-    title: '首页'
-  },
+ 
   {
     path: '/editorinfo/',
     name: 'editorinfo',

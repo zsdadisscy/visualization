@@ -31,6 +31,7 @@ function judge_online() {
     $.ajax({
       url: "http://47.105.178.110:8000/user/judge_online",
       type: "get",
+      // 关闭异步，防止返回前执行后续代码
       async: false,
       headers: {
         'Authorization': 'Bearer ' + store.state.user.access,

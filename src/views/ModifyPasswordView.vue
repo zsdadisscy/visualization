@@ -1,6 +1,7 @@
 <template>
-    <MenuComponent :title_text="'修改密码'">
+    <MenuComponent>
         <div class="modify-password-box">
+            <div class="modify-password-title">修改密码</div>
             <a-form
                 ref="formRef"
                 name="custom-validation"
@@ -39,6 +40,7 @@ import router from '@/router/index';
 import $ from 'jquery';
 import { useStore } from 'vuex';
 import { encrypt } from '@/user_function/user';
+import { judge_online } from '@/user_function/user';
 
 export default {
     name: 'ModifyPasswordView',
@@ -46,6 +48,11 @@ export default {
         MenuComponent,
     },
     setup() {
+        // 判断是否在线
+        if (!judge_online()) {
+            router.push({name: 'login'});
+        }
+
         const store = useStore();
         const formRef = ref();
         const formState = reactive({
@@ -104,6 +111,7 @@ export default {
         ],
         checkPass: [
             {
+            required: true,
             validator: validatePass_confirm,
             trigger: 'change',
             },
@@ -173,12 +181,21 @@ export default {
     top: 55%;
     left: 61%;
     width: 750px;
-    padding-top: 10%;
+    /* padding-top: 10%; */
     height: 510px;
     padding-left: 10%;
     transform: translate(-50%, -50%);
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.modify-password-title {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 80px;
+    margin-left: 170px;
+    align-content: center;
+    margin-top: 30px;
 }
 </style>
