@@ -310,8 +310,8 @@ export default {
   color: #666;
 }
 .img-icon {
-  width: 128px;
-  height: 128px;
+  width: 100%;
+  height: 100%;
 }
 
 
