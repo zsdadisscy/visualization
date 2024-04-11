@@ -78,7 +78,7 @@ export default {
     const store = useStore();
     const avatar_link = ref(store.state.user.avatar);
     const show_info = ref(false);
-    console.log(avatar_link.value);
+    
     const open_info = () => {
       show_info.value=true;
     }
