@@ -39,7 +39,7 @@
                 <a-form-item name="remember" no-style>
                     <a-checkbox v-model:checked="formState.remember" style="margin-left: 22px;">记住我</a-checkbox>
                 </a-form-item>
-                <router-link class="login-form-forgot" to="findpassword">忘记密码</router-link>
+                <router-link class="login-form-forgot" to="/findpassword">忘记密码</router-link>
                 </a-form-item>
 
                 <a-form-item>
@@ -48,7 +48,7 @@
                 </a-button>
                 <br>
                 <div class="jump">没有账号？
-                    <router-link to= 'register' style="color: red;">立即注册</router-link>
+                    <router-link to= '/register' style="color: red;">立即注册</router-link>
                 </div>
                 </a-form-item>
             </a-form>

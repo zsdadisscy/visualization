@@ -7,6 +7,8 @@ import NotFoundView from '../views/NotFoundView.vue'
 import EditorInfoView from '../views/EditorInfoView.vue'
 import ModifyPasswordView from '../views/ModifyPasswordView.vue'
 import ModifyProtectionView from '@/views/ModifyProtectionView.vue'
+import MyVisualView from '@/views/MyVisualView.vue'
+import PersonalizationView from '@/views/PersonalizationView.vue'
 
 const routes = [
    {
@@ -53,6 +55,18 @@ const routes = [
     name: 'modifyprotection',
     component: ModifyProtectionView,
     title: '修改密保',
+  },
+  {
+    path: '/myvisual/',
+    name: 'myvisual',
+    component: MyVisualView,
+    title: '我的可视化',
+  },
+  {
+    path: '/personalization/',
+    name: 'personalization',
+    component: PersonalizationView,
+    title: '个性化',
   },
   {
     path: '/404/',

@@ -1,76 +1,78 @@
 <template>
     <MenuComponent>
-        <div class="modify-info-title">编辑资料</div>
-        <a-form
-            ref="formRef"
-            :model="formState"
-            :rules="rules"
-            :label-col="labelCol"
-            :wrapper-col="wrapperCol"
-        >
-            
-            <a-form-item ref="name" label="名字" name="name">
-                <a-input v-model:value="formState.name" />
-            </a-form-item>
-            <a-form-item label="性别" name="gender">
-                <a-radio-group v-model:value="formState.gender">
-                    <a-radio value="男">男</a-radio>
-                    <a-radio value="女">女</a-radio>
-                </a-radio-group>
-            </a-form-item>
-            <a-form-item has-feedback label="年龄" name="age">
-                <a-input-number v-model:value="formState.age" />
-            </a-form-item>
-            <a-form-item label="专业" name="major">
-                <a-input v-model:value="formState.major" />
-            </a-form-item>
-            <a-form-item label="学历" name="education">
-            <a-radio-group v-model:value="formState.education">
-                <a-radio value="高中">高中</a-radio>
-                <a-radio value="专科">专科</a-radio>
-                <a-radio value="本科">本科</a-radio>
-                <a-radio value="硕士研究生">硕士研究生</a-radio>
-                <a-radio value="博士研究生">博士研究生</a-radio>
-                <a-radio value="其他">其他</a-radio>
-            </a-radio-group>
-            </a-form-item>
-            
-            <a-form-item label="兴趣岗位" name="interest_position">
-                <a-input v-model:value="formState.interest_position" />
-            </a-form-item>
-            <a-form-item label="兴趣城市" name="interest_city">
-                <a-input v-model:value="formState.interest_city" />
-            </a-form-item>
-
-            <a-form-item label="头像">
-                <a-upload
-                    v-model:file-list="fileList"
-                    name="avatar"
-                    list-type="picture-card"
-                    class="avatar-uploader"
-                    :show-upload-list="false"
-                    action="http://47.105.178.110:8000/user/upload_avatar"
-                    :maxCount="1"
-                    :method="post"
-                    :headers = headers
-                    :before-upload="beforeUpload"
-                    @change="handleChange"
-                >
-                    <img v-if="imageUrl" :src="imageUrl" alt="avatar" class="img-icon"/>
-                    <div v-else>
-                    <loading-outlined v-if="loading"></loading-outlined>
-                    <plus-outlined v-else></plus-outlined>
-                    <div class="ant-upload-text">上传</div>
-                    </div>
-                </a-upload>
-
-                <a-form-item :wrapper-col="{ span: 14, offset: 4 }">
-                <a-button @click="goback">返回</a-button>
-                <a-button style="margin-left: 30px" type="primary" @click="onSubmit">修改</a-button>
+        <div style="padding: 24px">
+            <div class="modify-info-title">编辑资料</div>
+            <a-form
+                ref="formRef"
+                :model="formState"
+                :rules="rules"
+                :label-col="labelCol"
+                :wrapper-col="wrapperCol"
+            >
                 
+                <a-form-item ref="name" label="名字" name="name">
+                    <a-input v-model:value="formState.name" />
                 </a-form-item>
-            </a-form-item>
-        </a-form>
+                <a-form-item label="性别" name="gender">
+                    <a-radio-group v-model:value="formState.gender">
+                        <a-radio value="男">男</a-radio>
+                        <a-radio value="女">女</a-radio>
+                    </a-radio-group>
+                </a-form-item>
+                <a-form-item has-feedback label="年龄" name="age">
+                    <a-input-number v-model:value="formState.age" />
+                </a-form-item>
+                <a-form-item label="专业" name="major">
+                    <a-input v-model:value="formState.major" />
+                </a-form-item>
+                <a-form-item label="学历" name="education">
+                <a-radio-group v-model:value="formState.education">
+                    <a-radio value="高中">高中</a-radio>
+                    <a-radio value="专科">专科</a-radio>
+                    <a-radio value="本科">本科</a-radio>
+                    <a-radio value="硕士研究生">硕士研究生</a-radio>
+                    <a-radio value="博士研究生">博士研究生</a-radio>
+                    <a-radio value="其他">其他</a-radio>
+                </a-radio-group>
+                </a-form-item>
+                
+                <a-form-item label="兴趣岗位" name="interest_position">
+                    <a-input v-model:value="formState.interest_position" />
+                </a-form-item>
+                <a-form-item label="兴趣城市" name="interest_city">
+                    <a-input v-model:value="formState.interest_city" />
+                </a-form-item>
+
+                <a-form-item label="头像">
+                    <a-upload
+                        v-model:file-list="fileList"
+                        name="avatar"
+                        list-type="picture-card"
+                        class="avatar-uploader"
+                        :show-upload-list="false"
+                        action="http://47.105.178.110:8000/user/upload_avatar"
+                        :maxCount="1"
+                        :method="post"
+                        :headers = headers
+                        :before-upload="beforeUpload"
+                        @change="handleChange"
+                    >
+                        <img v-if="imageUrl" :src="imageUrl" alt="avatar" class="img-icon"/>
+                        <div v-else>
+                        <loading-outlined v-if="loading"></loading-outlined>
+                        <plus-outlined v-else></plus-outlined>
+                        <div class="ant-upload-text">上传</div>
+                        </div>
+                    </a-upload>
+
+                    <a-form-item :wrapper-col="{ span: 14, offset: 4 }">
+                    <a-button @click="goback">返回</a-button>
+                    <a-button style="margin-left: 30px" type="primary" @click="onSubmit">修改</a-button>
+                    
+                    </a-form-item>
+                </a-form-item>
+            </a-form>
+        </div>
     </MenuComponent>
 </template>
 

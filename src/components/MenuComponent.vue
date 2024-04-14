@@ -10,16 +10,21 @@
       <!-- 侧边栏的菜单   -->
       <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline">
         <a-menu-item key="1">
-          <user-outlined />
-          <span>nav 1</span>
+          <router-link to="/myvisual" style="text-decoration: none;">
+              <FundOutlined />
+              <span>专业信息</span>
+          </router-link>
         </a-menu-item>
         <a-menu-item key="2">
-          <video-camera-outlined />
-          <span>nav 2</span>
+          <SearchOutlined />
+          <span @click="showDrawer">搜索其他职业信息
+          </span>
         </a-menu-item>
         <a-menu-item key="3">
-          <upload-outlined />
-          <span>nav 3</span>
+          <router-link to="/personalization">
+            <ExperimentOutlined />
+            <span>个性化推荐</span>
+          </router-link>
         </a-menu-item>
       </a-menu>
     </a-layout-sider>
@@ -55,9 +60,18 @@
         </div>        
       </a-layout-header>
       <a-layout-content
-        :style="{ margin: '24px 16px', padding: '24px', background: '#fff', minHeight: '280px' }"
+        :style="{ margin: '24px 16px',  background: '#fff', minHeight: '280px' }"
       >
-
+        <a-drawer :width="500" :placement="placement" :open="open" @close="onClose">
+          <template #extra>
+            <a-input-search
+              v-model:value="ser_value"
+              placeholder="请输入你感兴趣的职业"
+              enter-button
+              @search="onSearch"
+            />
+          </template>
+        </a-drawer>
         <slot></slot>
       </a-layout-content>
     </a-layout>
@@ -72,6 +86,15 @@ import router from '../router/index';
 export default {
   name: 'MenuComponent',
   setup() {
+    // 左边抽屉
+    const placement = ref('left');
+    const open = ref(false);
+    const showDrawer = () => {
+      open.value = true;
+    };
+    const onClose = () => {
+      open.value = false;
+    };
 
     const selectedKeys = ref(['1']);
     const collapsed = ref(false);
@@ -91,7 +114,12 @@ export default {
       store.commit('logout');
       router.push({name :'login'});
     };
-
+    // 搜索逻辑
+    const ser_value = ref('');
+    const onSearch = searchValue => {
+      console.log('use value', searchValue);
+      console.log('or use this.value', value.value);
+    };
     return {
       selectedKeys,
       collapsed,
@@ -101,6 +129,12 @@ export default {
       open_info,
       close_info,
       logout,
+      open,
+      showDrawer,
+      onClose,
+      placement,
+      ser_value,
+      onSearch,
     };
   },
 };
