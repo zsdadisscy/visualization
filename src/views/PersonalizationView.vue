@@ -1,5 +1,5 @@
 <template>
-    <MenuComponent>
+    <MenuComponent :key_menu="'4'">
         
         <a-table :columns="columns" :data-source="data">
             <template #headerCell="{ column }">
@@ -50,19 +50,34 @@
 <script>
 
 import MenuComponent from '@/components/MenuComponent.vue';
-// import VisualComponent from '@/components/VisualComponent.vue';
+import $ from 'jquery';
+import {useStore} from 'vuex';
 
 export default {
     name: 'PersonalizationView',
     components: {
         MenuComponent,
-        // VisualComponent
+        
+    },
+    setup() {
+        const store = useStore();
+        // 需要判断是否资料齐全否则跳转完善界面
+        $.ajax({
+            url: 'http://47.105.178.110:8000/recommend/recommend_data',
+                type: 'get',
+                headers: {
+                    "Authorization": 'Bearer ' + store.state.user.access,
+                },
+                success(resp) {
+                    console.log(resp);
+                }
+        })
     },
     data() {
         return {
             columns: [
                 {
-                    title: '公式名称',
+                    title: '公司名称',
                     dataIndex: 'companyname',
                     key: 'companyname',
                     
@@ -98,6 +113,11 @@ export default {
                     dataIndex: 'companytype',
                 },
                 {
+                    title: '行业类型',
+                    key: 'industrytype',
+                    dataIndex: 'industrytype',
+                },
+                {
                     title: '前程无忧官网',
                     key: 'url',
                     dataIndex: 'url',
@@ -106,7 +126,8 @@ export default {
                     title: '公司官网',
                     key: 'companyurl',
                     dataIndex: 'companyurl',
-                }
+                },
+                
             ],
             data: [
                 {

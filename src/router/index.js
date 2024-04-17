@@ -9,6 +9,7 @@ import ModifyPasswordView from '../views/ModifyPasswordView.vue'
 import ModifyProtectionView from '@/views/ModifyProtectionView.vue'
 import MyVisualView from '@/views/MyVisualView.vue'
 import PersonalizationView from '@/views/PersonalizationView.vue'
+import SerVisaulView from '@/views/SerVisaulView.vue'
 
 const routes = [
    {
@@ -67,6 +68,12 @@ const routes = [
     name: 'personalization',
     component: PersonalizationView,
     title: '个性化',
+  },
+  {
+    path: '/servisual/:job',
+    name: 'servisual',
+    component: SerVisaulView,
+    title: '搜索可视化·',
   },
   {
     path: '/404/',

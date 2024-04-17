@@ -10,17 +10,23 @@
       <!-- 侧边栏的菜单   -->
       <a-menu v-model:selectedKeys="selectedKeys" theme="dark" mode="inline">
         <a-menu-item key="1">
-          <router-link to="/myvisual" style="text-decoration: none;">
+          <router-link to="/home" >
+              <HomeOutlined />
+              <span>首页</span>
+          </router-link>
+        </a-menu-item>
+        <a-menu-item key="2">
+          <router-link to="/myvisual">
               <FundOutlined />
               <span>专业信息</span>
           </router-link>
         </a-menu-item>
-        <a-menu-item key="2">
+        <a-menu-item key="3" @click="showDrawer">
           <SearchOutlined />
-          <span @click="showDrawer">搜索其他职业信息
+          <span >搜索其他职业信息
           </span>
         </a-menu-item>
-        <a-menu-item key="3">
+        <a-menu-item key="4">
           <router-link to="/personalization">
             <ExperimentOutlined />
             <span>个性化推荐</span>
@@ -62,6 +68,7 @@
       <a-layout-content
         :style="{ margin: '24px 16px',  background: '#fff', minHeight: '280px' }"
       >
+      <!-- 抽屉搜索 -->
         <a-drawer :width="500" :placement="placement" :open="open" @close="onClose">
           <template #extra>
             <a-input-search
@@ -71,6 +78,18 @@
               @search="onSearch"
             />
           </template>
+          <div class="ser-res" v-if="ser_res === 1">
+            <p>十分抱歉，目前数据库中暂时没有该职业信息</p>
+            <p>已在后台登记你的查询，请你稍等一段时间再来查看</p>
+            <p>你可以看看其他职业</p>
+            <a-button type="primary" @click="cancel_ser" block>确定</a-button>
+          </div>
+          <div class="ser-res" v-if="ser_res === 2">
+            <p>数据中存在该数据吗，点击确认键跳转查看</p>
+            <a-button @click="cancel_ser" style="margin-right: 30px;">取消</a-button>
+            <a-button type="primary" @click="go_visual">确定</a-button>
+          </div>
+
         </a-drawer>
         <slot></slot>
       </a-layout-content>
@@ -82,10 +101,15 @@
 import { ref } from 'vue';
 import { useStore } from 'vuex';
 import router from '../router/index';
+import $ from 'jquery';
 
 export default {
   name: 'MenuComponent',
-  setup() {
+  props: {
+    key_menu : String,
+  },
+
+  setup(props) {
     // 左边抽屉
     const placement = ref('left');
     const open = ref(false);
@@ -96,7 +120,15 @@ export default {
       open.value = false;
     };
 
+
+    // 显示来蓝色逻辑
+
     const selectedKeys = ref(['1']);
+    
+
+    if (props.key_menu !== undefined) {
+      selectedKeys.value = [props.key_menu];
+    }
     const collapsed = ref(false);
     const store = useStore();
     const avatar_link = ref(store.state.user.avatar);
@@ -110,15 +142,67 @@ export default {
       show_info.value = false;
     }
 
+
     const logout = () => {
       store.commit('logout');
       router.push({name :'login'});
     };
     // 搜索逻辑
+    const ser_res = ref(0);
     const ser_value = ref('');
     const onSearch = searchValue => {
-      console.log('use value', searchValue);
-      console.log('or use this.value', value.value);
+      $.ajax({
+                url: 'http://47.105.178.110:8000/data/judge_data',
+                type: 'post',
+                headers: {
+                        'Content-Type': 'application/json',
+                        "Authorization": 'Bearer ' + store.state.user.access,
+                },
+                async: false,
+                data: JSON.stringify({
+                    job: searchValue,
+                }),
+                success(resp) {
+                    if (resp.result === 'success') {
+                        ser_res.value = 2;
+                    }
+                    else {
+                        ser_res.value = 1;
+                         // 不存在登记信息
+                        $.ajax({
+                            url: 'http://47.105.178.110:8000/data/register_data',
+                            type: 'post',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                "Authorization": 'Bearer ' + store.state.user.access,
+                            },
+                            data: JSON.stringify({
+                                job: searchValue,
+                            }),
+                            success(resp) {
+                                if (!resp.result === 'success') {
+                                    alert('系统错误，登记失败');
+                                } 
+                            },
+                            error() {
+                                alert('系统错误');
+                            }
+                        });
+
+                    }
+                },
+                error() {
+                  alert('系统错误');
+                }
+
+      })
+    }
+    const cancel_ser = () => {
+      ser_res.value = 0;
+    };
+    
+    const go_visual = () => {
+      router.push({name: 'servisual', params: { job: ser_value.value }});
     };
     return {
       selectedKeys,
@@ -135,6 +219,9 @@ export default {
       placement,
       ser_value,
       onSearch,
+      ser_res,
+      cancel_ser,
+      go_visual,
     };
   },
 };
@@ -146,7 +233,6 @@ export default {
 <style scoped>
 #components-layout-demo-custom-trigger {
   height: 100vh;
-
 }
 
 #components-layout-demo-custom-trigger .trigger {
@@ -216,6 +302,11 @@ export default {
   position: absolute;
   top: 0;
   right: 40%;
+  text-align: center;
+}
+
+.ser-res {
+  margin-top: 20px;
   text-align: center;
 }
 

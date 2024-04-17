@@ -8,7 +8,7 @@
         <p>已在后台登记，请你稍等一段时间再来查看</p>
         <p>即将跳转到主页</p>
     </a-modal>
-    <div class="visual-view" v-if="!open">
+    <div class="visual-view" v-if="is_show">
         <div style="display: flex; justify-content: space-around; " >
         <div class="echart-box" ref="box"></div>
         <div class="echart-box" ref="boxpie"></div>
@@ -18,6 +18,12 @@
             <div class="echart-box" ref="boxpie_line"></div>
             <div class="echart-box" ref="boxpie_rose"></div>
         </div>
+    </div>
+    <div class="no-data" v-if="!is_show">
+        <a-typography>
+            <a-typography-title>数据暂时不存在，十分抱歉</a-typography-title>
+            
+        </a-typography>
     </div>
 </template>
 
@@ -51,7 +57,7 @@ export default {
         let date_values = [];
         let degree = [];
         let companytype = [];
-
+        const is_show = ref(true);
 
         // 判断是否存在数据
         function getData() {
@@ -83,7 +89,7 @@ export default {
                             }),
                             success(resp) {
                                 if (resp.result === 'success') {
-                                    console.log(resp);
+                                    // console.log(resp);
                                     // 不能直接赋值，否则会出现数据不显示的问题，等价为一个副本
                                     city_keys.push(resp.city_counts_key);
                                     city_values.push(resp.city_counts_values);
@@ -101,6 +107,7 @@ export default {
                                     }
                                     // city_keys = city_keys.slice(0, 10);
                                     // city_values = city_values.slice(0, 10);
+                                    
                                 } 
                             },
                             error() {
@@ -108,6 +115,7 @@ export default {
                             }
                         })
                     } else {
+                        is_show.value = false;
                         open.value = true;
                         // 数据不存在
                     }
@@ -118,7 +126,7 @@ export default {
             })
             // city_keys = city_keys.slice(0, 10);
             // city_values = city_values.slice(0, 10);
-            console.log(city_values, city_keys);
+            // console.log(is_show.value);
         };
 
         const open = ref(false);
@@ -161,14 +169,17 @@ export default {
             date_values,
             degree,
             companytype,
-            getData
+            getData,
+            is_show
 
         }
     },
     mounted() {
         this.getData();
         // 挂在完成dom后进行初始化
-        this.showEcarts();
+        // console.log(this.is_show);
+        if (this.is_show)
+            this.showEcarts();
     },
     methods: {
         
@@ -187,7 +198,7 @@ export default {
                 top_city_value.push(this.city_values[0][i]);
                 
             }
-            console.log(top_city_value,top_city);
+            // console.log(top_city_value,top_city);
             //绘制图表
             const option = {
                 title: {
@@ -313,8 +324,14 @@ export default {
 }
 .echart-box{
     width: 500px;
-    height: 270px;
+    height: 37vh;
     border: 3px solid pink;
     margin: 20px auto;
+}
+.no-data{
+    margin: 0 auto;
+    width: 70%;
+    padding: 20px;
+    margin-top: 10%;
 }
 </style>

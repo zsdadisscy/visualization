@@ -1,5 +1,5 @@
 <template>
-    <MenuComponent :title_text="'首页'">
+    <MenuComponent :key_menu="'1'">
         <a-modal v-model:open="open" title="建议你完善你的资料" @ok="handleOk"
             cancelText="暂不" okText="前去"
         >
@@ -90,7 +90,6 @@ export default {
     margin: 0 auto;
     width: 70%;
     padding: 20px;
-
     margin-top: 10%;
 }
 

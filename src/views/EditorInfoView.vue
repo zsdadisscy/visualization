@@ -27,19 +27,20 @@
                 </a-form-item>
                 <a-form-item label="学历" name="education">
                 <a-radio-group v-model:value="formState.education">
+                    <a-radio value="其他">其他</a-radio>
                     <a-radio value="高中">高中</a-radio>
                     <a-radio value="专科">专科</a-radio>
                     <a-radio value="本科">本科</a-radio>
                     <a-radio value="硕士研究生">硕士研究生</a-radio>
                     <a-radio value="博士研究生">博士研究生</a-radio>
-                    <a-radio value="其他">其他</a-radio>
+                    
                 </a-radio-group>
                 </a-form-item>
                 
-                <a-form-item label="兴趣岗位" name="interest_position">
+                <a-form-item label="兴趣岗位（请以空格分开）" name="interest_position">
                     <a-input v-model:value="formState.interest_position" />
                 </a-form-item>
-                <a-form-item label="兴趣城市" name="interest_city">
+                <a-form-item label="兴趣城市（请以空格分开）" name="interest_city">
                     <a-input v-model:value="formState.interest_city" />
                 </a-form-item>
 
