@@ -40,7 +40,6 @@ import router from '@/router/index';
 import $ from 'jquery';
 import { useStore } from 'vuex';
 import { encrypt } from '@/user_function/user';
-import { judge_online } from '@/user_function/user';
 
 export default {
     name: 'ModifyPasswordView',
@@ -48,10 +47,7 @@ export default {
         MenuComponent,
     },
     setup() {
-        // 判断是否在线
-        if (!judge_online()) {
-            router.push({name: 'login'});
-        }
+     
 
         const store = useStore();
         const formRef = ref();

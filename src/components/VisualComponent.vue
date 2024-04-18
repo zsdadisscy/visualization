@@ -32,6 +32,7 @@ import $ from 'jquery';
 import {useStore} from 'vuex';
 import router from '../router/index';
 import { ref } from 'vue';
+import { judge_online } from '@/user_function/user';
 
 export default {
     name: 'VisualComponent',
@@ -46,6 +47,7 @@ export default {
     },
     setup(props) {
         
+
         const store = useStore();
         let city_keys = [];
         let city_values = [];
@@ -175,11 +177,17 @@ export default {
         }
     },
     mounted() {
-        this.getData();
-        // 挂在完成dom后进行初始化
-        // console.log(this.is_show);
-        if (this.is_show)
-            this.showEcarts();
+        // 判断是否登录
+        if (!judge_online()) {
+            router.push({name: 'login'});
+        }
+        else {
+            this.getData();
+            // 挂在完成dom后进行初始化
+            // console.log(this.is_show);
+            if (this.is_show)
+                this.showEcarts();
+        }
     },
     methods: {
         

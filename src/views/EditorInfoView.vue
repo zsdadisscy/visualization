@@ -37,10 +37,10 @@
                 </a-radio-group>
                 </a-form-item>
                 
-                <a-form-item label="兴趣岗位（请以空格分开）" name="interest_position">
+                <a-form-item label="兴趣岗位（请以空格隔开）" name="interest_position">
                     <a-input v-model:value="formState.interest_position" />
                 </a-form-item>
-                <a-form-item label="兴趣城市（请以空格分开）" name="interest_city">
+                <a-form-item label="兴趣城市（请以空格隔开）" name="interest_city">
                     <a-input v-model:value="formState.interest_city" />
                 </a-form-item>
 
@@ -85,7 +85,7 @@ import {useStore} from 'vuex';
 import router from '../router/index';
 import { message } from 'ant-design-vue';
 import $ from 'jquery';
-import { judge_online } from '@/user_function/user';
+
 
 export default {
     name: 'EditorInfoView',
@@ -94,9 +94,7 @@ export default {
     },
     setup() {
         const store = useStore();
-        if (!judge_online()) {
-            router.push({name: 'login'});
-        }
+       
 
         const formRef = ref();
         const labelCol = {

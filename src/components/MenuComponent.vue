@@ -102,6 +102,7 @@ import { ref } from 'vue';
 import { useStore } from 'vuex';
 import router from '../router/index';
 import $ from 'jquery';
+import { judge_online } from '@/user_function/user';
 
 export default {
   name: 'MenuComponent',
@@ -110,6 +111,12 @@ export default {
   },
 
   setup(props) {
+    // 判断是否登录
+    if (!judge_online()) {
+            router.push({name: 'login'});
+
+      }
+
     // 左边抽屉
     const placement = ref('left');
     const open = ref(false);

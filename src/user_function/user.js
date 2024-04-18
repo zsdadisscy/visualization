@@ -37,7 +37,6 @@ function judge_online() {
         'Authorization': 'Bearer ' + store.state.user.access,
       },
       success(resp) {
-
           if (resp.result === 'success') 
             suc = true;
       },
@@ -48,7 +47,6 @@ function judge_online() {
   }
   if (suc)
       return true;
-
   store.commit('logout');
   return false;
 }

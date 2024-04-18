@@ -26,7 +26,7 @@
 import $ from 'jquery';
 import {useStore} from 'vuex';
 import router from '../router/index';
-import { judge_online } from '@/user_function/user';
+
 import MenuComponent from '@/components/MenuComponent.vue';
 import {ref} from 'vue';
 
@@ -38,11 +38,9 @@ export default {
     setup() {
         const store = useStore();
 
-        if (!judge_online()) {
-            router.push({name: 'login'});
-            
-        }
         
+        
+        // 判断是否需要完善资料
         const open = ref(false);
 
         const handleOk = () => {

@@ -61,7 +61,6 @@ import { reactive, computed } from 'vue';
 import BackGround from '../components/BackGround.vue';
 import {useStore} from 'vuex';
 import router from '@/router/index';
-import { judge_online } from '@/user_function/user';
 
 export default {
     name: 'LoginView',
@@ -76,15 +75,14 @@ setup() {
     });
     const store = useStore();
 
-    if (judge_online()) {
-        console.log('执行跳转到home');
-        router.push({name: 'home'});
-    }
+    
+    // 记住我逻辑
     if (localStorage.getItem('remember') === 'true') {
         formState.username = localStorage.getItem('username');
         formState.password = localStorage.getItem('password');
         formState.remember = true;
     }
+   
 
     const onFinish = values => {
         let { username, password, remember } = values;

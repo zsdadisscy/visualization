@@ -1,49 +1,23 @@
 <template>
     <MenuComponent :key_menu="'4'">
+        <a-modal v-model:open="open" title="建议你完善你的资料" @ok="handleOk"
+            cancelText="暂不" okText="前去" @cancel="handleCancel"
+        >
+            <br>
+            <p>由于你的资料尚未完善</p>
+            <p>为了能根据你的资料为你提供职业推荐</p>
+            <p>建议你完善你的资料，否则我们无法提供数据</p>
+        </a-modal>
+        <div class="table-container">
+            <a-table
+                :columns="columns"
+                :data-source="dataSource"
+            >
+            </a-table>
+        </div>  
         
-        <a-table :columns="columns" :data-source="data">
-            <template #headerCell="{ column }">
-            <template v-if="column.key === 'name'">
-                <span>
-                <smile-outlined />
-                Name
-                </span>
-            </template>
-            </template>
-
-            <template #bodyCell="{ column, record }">
-            <template v-if="column.key === 'name'">
-                <a>
-                {{ record.name }}
-                </a>
-            </template>
-            <template v-else-if="column.key === 'tags'">
-                <span>
-                <a-tag
-                    v-for="tag in record.tags"
-                    :key="tag"
-                    :color="tag === 'loser' ? 'volcano' : tag.length > 5 ? 'geekblue' : 'green'"
-                >
-                    {{ tag.toUpperCase() }}
-                </a-tag>
-                </span>
-            </template>
-            <template v-else-if="column.key === 'action'">
-                <span>
-                <a>Invite 一 {{ record.name }}</a>
-                <a-divider type="vertical" />
-                <a>Delete</a>
-                <a-divider type="vertical" />
-                <a class="ant-dropdown-link">
-                    More actions
-                    <down-outlined />
-                </a>
-                </span>
-            </template>
-            </template>
-        </a-table>
         <div class='alert'>
-            <span>以下结果仅供参考数据来源于前程无忧，一切以官网数据为准</span>
+            <span>以下结果仅供参考,数据来源于前程无忧，一切以官网数据为准</span>
         </div>
     </MenuComponent>
 </template>
@@ -52,6 +26,8 @@
 import MenuComponent from '@/components/MenuComponent.vue';
 import $ from 'jquery';
 import {useStore} from 'vuex';
+import { ref } from 'vue';
+import router from '@/router';
 
 export default {
     name: 'PersonalizationView',
@@ -60,22 +36,83 @@ export default {
         
     },
     setup() {
+        
+        const current = ref(1);
+        const dataSource = ref([]);
         const store = useStore();
         // 需要判断是否资料齐全否则跳转完善界面
+        // 判断是否需要完善资料
+        const open = ref(false);
+
+        const handleOk = () => {
+            router.push({name: 'editorinfo'});
+        };
+
+        const handleCancel = () => {
+            open.value = false;
+            router.go(-1);
+        };
+
         $.ajax({
-            url: 'http://47.105.178.110:8000/recommend/recommend_data',
-                type: 'get',
-                headers: {
-                    "Authorization": 'Bearer ' + store.state.user.access,
-                },
-                success(resp) {
-                    console.log(resp);
+            url: "http://47.105.178.110:8000/user/get_status",
+            type: "get",
+            headers: {
+                'Authorization': 'Bearer ' + store.state.user.access,
+            },
+            success(resp) {
+                if (resp.result === 'success') {
+                    // 需要修改资料
+                    if (resp.data === '未完善')
+                    {
+                        open.value = true;
+                    }
+                    else {
+                    // 获取推荐数据
+                    $.ajax({
+                            url: 'http://47.105.178.110:8000/recommend/recommend_data',
+                                type: 'get',
+                                headers: {
+                                    "Authorization": 'Bearer ' + store.state.user.access,
+                                },
+                                success(resp) {
+                                    // 处理数据
+                                    if (resp.result === 'success') {
+                                        for (let i = 0; i < resp.data.length; i++) {
+                                            dataSource.value.push({
+                                                key: i,
+                                                companyname: resp.data[i][5],
+                                                jobname: resp.data[i][0],
+                                                address: resp.data[i][1],
+                                                salary: resp.data[i][2],
+                                                workexperience: resp.data[i][3],
+                                                education: resp.data[i][4],
+                                                companytype: resp.data[i][6],
+                                                industrytype: resp.data[i][9],
+                                                url: resp.data[i][7],
+                                                companyurl: resp.data[i][8],
+                                            })
+                                        }
+                                    }
+                                }
+                        });
+                    }
                 }
-        })
-    },
-    data() {
-        return {
-            columns: [
+                else if (resp.msg ===  "Signature verification failed") {
+                    store.state.user.is_login = false;
+                    router.push({name:'login'});
+                }
+                
+            },
+            error(resp) {
+                console.log(resp);
+                if (resp.msg !== '')
+                    router.push({name:'login'});
+                else
+                    alert('系统错误');
+            }
+        });
+        
+        const columns = [
                 {
                     title: '公司名称',
                     dataIndex: 'companyname',
@@ -118,7 +155,7 @@ export default {
                     dataIndex: 'industrytype',
                 },
                 {
-                    title: '前程无忧官网',
+                    title: '职位官网',
                     key: 'url',
                     dataIndex: 'url',
                 },
@@ -128,62 +165,20 @@ export default {
                     dataIndex: 'companyurl',
                 },
                 
-            ],
-            data: [
-                {
-                    key: '1',
-                    companyname: '北京世纪放歌企业管理咨询',
-                    jobname: '计算机管理员',
-                    address: '北京·石景山区',
-                    salary: '1-1.5万',
-                    workexperience: '3-4年',
-                    education: '大专',
-                    companytype: '民营',
-                    url:'https://jobs.51job.com/beijing-sjsq/126358192.html?s=sou_sou_soulb&t=0_0&req=e2ca8c3daa782dfb672a4b0d3792b5cb',
-                    companyurl: 'https://jobs.51job.com/all/coBWUBbV49DjcAbVA0AWQ.html'
-                },
-                {
-                    key: '2',
-                    companyname: '深圳市晟才高级中学',
-                    jobname: '信息技术及电脑维护老师',
-                    address: '深圳·龙岗区',
-                    salary: '18-25万/年',
-                    workexperience: '1年',
-                    education: '本科',
-                    companytype: '民营',
-                    url:'https://jobs.51job.com/shenzhen-lgq/137456324.html?s=sou_sou_soulb&t=0_0&req=e2ca8c3daa782dfb672a4b0d3792b5cb',
-                    companyurl: 'https://jobs.51job.com/all/coAmFXMF84UmkAZAVlUTM.html'
-                },
-                {
-                    key: '3',
-                    companyname: '大连益点通信息技术',
-                    jobname: '网络管理员',
-                    address: '大连·沙河口区',
-                    salary: '8千-1万·14薪',
-                    workexperience: '1年',
-                    education: '本科',
-                    companytype: '民营',
-                    url:'https://jobs.51job.com/dalian-shkq/152327068.html?s=sou_sou_soulb&t=0_0&req=e2ca8c3daa782dfb672a4b0d3792b5cb',
-                    companyurl: 'https://jobs.51job.com/all/coCWlWOlc8UWpRPQBnVjA.html'
-                },
-                {
-                    key: '4',
-                    companyname: '深圳市晟才高级中学',
-                    jobname: '信息技术及电脑维护老师',
-                    address: '深圳·龙岗区',
-                    salary: '18-25万/年',
-                    workexperience: '1年',
-                    education: '本科',
-                    companytype: '民营',
-                    url:'https://jobs.51job.com/shenzhen-lgq/137456324.html?s=sou_sou_soulb&t=0_0&req=e2ca8c3daa782dfb672a4b0d3792b5cb',
-                    companyurl: 'https://jobs.51job.com/all/coBWUBbV49DjcAbVA0AWQ.html'
-                },
-                
+            ];
 
-                
-            ],
-        };
+            return {
+                columns,
+                dataSource,
+                columns,
+                current,
+                open,
+                handleOk,
+                handleCancel,
+            };
+            
     },
+
 }
 
 </script>
@@ -197,6 +192,12 @@ export default {
     border-radius: 5px;
     text-align: center;
     
+}
+
+
+.table-container {
+    max-height: 81vh;
+    overflow-y: auto;
 }
 
 </style>

@@ -91,7 +91,7 @@ import BackGround from '../components/BackGround.vue';
 import $ from 'jquery';
 import { useStore } from 'vuex';
 import router from '@/router/index.js';
-import { judge_online, encrypt } from '../user_function/user.js';
+import { encrypt } from '../user_function/user.js';
 
 export default {
     name: 'RegisterView',
@@ -108,9 +108,7 @@ setup() {
         password_question: '',
         password_answer: '',
     });
-    if (judge_online()) {
-        router.push({name: 'home'});
-    }
+    
     const onFinish = values => {
         let{username, password, confirm_password, password_question, password_answer} = values;
         if (password !== confirm_password) {

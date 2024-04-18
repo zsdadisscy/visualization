@@ -37,7 +37,6 @@ import { ref, reactive } from 'vue';
 import router from '@/router/index';
 import $ from 'jquery';
 import { useStore } from 'vuex';
-import { judge_online } from '@/user_function/user';
 
 export default {
     name: 'ModifyProtectionView',
@@ -46,11 +45,7 @@ export default {
     },
     setup() {
 
-        // 判断是否在线
-        if (!judge_online()) {
-            router.push({name: 'login'});
-        }
-
+     
         const store = useStore();
         const formRef = ref();
         const formState = reactive({
