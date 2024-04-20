@@ -10,6 +10,7 @@ import ModifyProtectionView from '@/views/ModifyProtectionView.vue'
 import MyVisualView from '@/views/MyVisualView.vue'
 import PersonalizationView from '@/views/PersonalizationView.vue'
 import SerVisaulView from '@/views/SerVisaulView.vue'
+import MapView from '@/views/MapView.vue'
 
 const routes = [
    {
@@ -74,6 +75,12 @@ const routes = [
     name: 'servisual',
     component: SerVisaulView,
     title: '搜索可视化·',
+  },
+  {
+    path: '/map/:job',
+    name: 'map',
+    component: MapView,
+    title: '地图',
   },
   {
     path: '/404/',

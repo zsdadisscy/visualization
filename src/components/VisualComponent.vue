@@ -8,15 +8,18 @@
         <p>已在后台登记，请你稍等一段时间再来查看</p>
         <p>即将跳转到主页</p>
     </a-modal>
+    <a-button class="shift" @click="shift_view" type="primary">职业招聘地区分布</a-button>
     <div class="visual-view" v-if="is_show">
         <div style="display: flex; justify-content: space-around; " >
         <div class="echart-box" ref="box"></div>
         <div class="echart-box" ref="boxpie"></div>
         
         </div>
+        
         <div style="display: flex; justify-content: space-around;">
             <div class="echart-box" ref="boxpie_line"></div>
             <div class="echart-box" ref="boxpie_rose"></div>
+           
         </div>
     </div>
     <div class="no-data" v-if="!is_show">
@@ -47,7 +50,6 @@ export default {
     },
     setup(props) {
         
-
         const store = useStore();
         let city_keys = [];
         let city_values = [];
@@ -90,6 +92,7 @@ export default {
                                 job: props.job
                             }),
                             success(resp) {
+                                console.log(resp);
                                 if (resp.result === 'success') {
                                     // console.log(resp);
                                     // 不能直接赋值，否则会出现数据不显示的问题，等价为一个副本
@@ -157,6 +160,10 @@ export default {
 
             router.push({name: 'home'});
         };
+        // 切换界面
+        const shift_view = () => {
+            router.push({name: 'map',  params: { job: props.job }});
+        };
 
         return {
             open,
@@ -172,7 +179,8 @@ export default {
             degree,
             companytype,
             getData,
-            is_show
+            is_show,
+            shift_view
 
         }
     },
@@ -185,7 +193,7 @@ export default {
             this.getData();
             // 挂在完成dom后进行初始化
             // console.log(this.is_show);
-            if (this.is_show)
+            if (this.is_show )
                 this.showEcarts();
         }
     },
@@ -208,7 +216,7 @@ export default {
             }
             // console.log(top_city_value,top_city);
             //绘制图表
-            const option = {
+            let option = {
                 title: {
                     text: '城市数据统计（前十名）',
              
@@ -341,5 +349,14 @@ export default {
     width: 70%;
     padding: 20px;
     margin-top: 10%;
+}
+.shift {
+    position: absolute;
+    right: 20px;
+    top: 200px;
+    height: 50%;
+    width: 2%;
+    padding: 0px;
+    writing-mode: vertical-rl;
 }
 </style>
