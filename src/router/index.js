@@ -11,6 +11,15 @@ import MyVisualView from '@/views/MyVisualView.vue'
 import PersonalizationView from '@/views/PersonalizationView.vue'
 import SerVisaulView from '@/views/SerVisaulView.vue'
 import MapView from '@/views/MapView.vue'
+import NProgress from "nprogress"
+import 'nprogress/nprogress.css' //这个样式必须引入
+
+NProgress.inc(0.2)
+NProgress.configure({
+  easing: 'ease', 
+  speed: 500,
+  showSpinner: true,
+})
 
 const routes = [
    {
@@ -18,84 +27,125 @@ const routes = [
     name: 'home',
     component: HomeView,
     alias: '/',
-    title: '首页'
+    meta : {  
+      title: '首页'
+    }
   },
   {
     path: '/login/',
     name: 'login',
     component: LoginView,
     // alias: '/login/',
-    title: '登录'
+    meta : {
+      title: '登录'
+    }
   },
   {
     path: '/register/',
     name: 'register',
     component: RegisterView,
-    title: '注册'
+    meta : {
+      title: '注册'
+    }
   },
   {
     path: '/findpassword/',
     name: 'findpassword',
     component: FindPasswordView,
-    title: '找回密码'
+    meta : {
+      title: '找回密码'
+    }
   },
  
   {
     path: '/editorinfo/',
     name: 'editorinfo',
     component: EditorInfoView,
-    title: '编辑资料'
+    meta : {
+      title: '编辑资料'
+    }
   },
   {
     path: '/modifypassword/',
     name: 'modifypasswordview',
     component: ModifyPasswordView,
-    title: '修改密码',
+    meta : {
+      title: '修改密码'
+    }
   },
   {
     path: '/modifyprotection/',
     name: 'modifyprotection',
     component: ModifyProtectionView,
-    title: '修改密保',
+    meta : {
+      title: '修改密保'
+    }
   },
   {
     path: '/myvisual/',
     name: 'myvisual',
     component: MyVisualView,
-    title: '我的可视化',
+    meta : {  
+      title: '我的可视化'
+    }
   },
   {
     path: '/personalization/',
     name: 'personalization',
     component: PersonalizationView,
-    title: '个性化',
+    meta : {
+      title: '个性化'
+    }
   },
   {
     path: '/servisual/:job',
     name: 'servisual',
     component: SerVisaulView,
-    title: '搜索可视化·',
+    meta : {
+      title: '搜索可视化'
+    }
   },
   {
     path: '/map/:job',
     name: 'map',
     component: MapView,
-    title: '地图',
+    meta : {
+      title: '地图'
+    }
   },
   {
     path: '/404/',
     name: '404',
     component: NotFoundView,
+    meta : {
+      title: '404'
+    }
   },
   {
     path: '/:catchAll(.*)',
-    redirect: '/404/'
+    redirect: '/404/',
+    meta : {
+      title: '404'
+    }
+   
   }
 ]
 
 const router = createRouter({
   history: createWebHistory(),
   routes
+})
+
+router.beforeEach((to, from, next) => { 
+  NProgress.start();   // 开启进度条
+  next();
+
+})
+
+router.afterEach((to, from) => {
+  NProgress.done();   // 关闭进度条
+  document.title = to.meta.title;
+  console.log(to)
 })
 
 export default router

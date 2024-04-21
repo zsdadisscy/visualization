@@ -67,7 +67,7 @@ export default {
                 }
             },
             error(resp) {
-                console.log(resp);
+                // console.log(resp);
                 if (resp.msg !== '')
                     router.push({name:'login'});
                 else
