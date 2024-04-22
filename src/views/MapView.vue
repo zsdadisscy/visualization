@@ -27,7 +27,6 @@ import {useStore} from 'vuex';
 import router from '../router/index';
 import { ref } from 'vue';
 import MenuComponent from '@/components/MenuComponent.vue';
-import { judge_online } from '@/user_function/user';
 import { useRoute } from 'vue-router';
 
 export default {
@@ -87,15 +86,10 @@ export default {
     },
     mounted() {
         
-        // 判断是否登录
-        if (!judge_online()) {
-            router.push({name: 'login'});
-        }
-        else {
-            
-            if (this.is_show )
-                this.showEcarts();
-        }
+        
+        if (this.is_show )
+            this.showEcarts();
+
         
     },
     methods: {

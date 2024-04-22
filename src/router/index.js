@@ -12,7 +12,8 @@ import PersonalizationView from '@/views/PersonalizationView.vue'
 import SerVisaulView from '@/views/SerVisaulView.vue'
 import MapView from '@/views/MapView.vue'
 import NProgress from "nprogress"
-import 'nprogress/nprogress.css' //这个样式必须引入
+import 'nprogress/nprogress.css' 
+import { judge_online } from '@/user_function/user';
 
 NProgress.inc(0.2)
 NProgress.configure({
@@ -136,16 +137,27 @@ const router = createRouter({
   routes
 })
 
+const guestOnlyPaths = [/^\/login\/?$/, /^\/register\/?$/, /^\/findpassword\/?$/];
+const authRequiredPaths = [/^\/home\/?$/, /^\/editorinfo\/?$/, /^\/modifypassword\/?$/, /^\/modifyprotection\/?$/, /^\/myvisual\/?$/, /^\/personalization\/?$/, /^\/servisual\/?$/, /^\/map\/?$/];
+
 router.beforeEach((to, from, next) => { 
   NProgress.start();   // 开启进度条
-  next();
 
+  if (guestOnlyPaths.some(path => path.test(to.path))) {
+    if (judge_online()) 
+      return router.push('/home/');
+  }
+  else if (authRequiredPaths.some(path => path.test(to.path))) {
+    if (!judge_online()) 
+      return router.push('/login/');
+  }
+  next();
 })
 
 router.afterEach((to, from) => {
   NProgress.done();   // 关闭进度条
   document.title = to.meta.title;
-  console.log(to)
+
 })
 
 export default router

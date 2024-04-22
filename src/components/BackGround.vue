@@ -7,8 +7,7 @@
 </template>
 <script >
 
-import { judge_online } from '../user_function/user';
-import router from '../router/index';
+
 
 export default {
     name: 'BackGround',
@@ -19,9 +18,7 @@ export default {
         }
     },
     setup () {
-        if (judge_online()) {
-            router.push({name: 'home'});
-        }
+        
     }
 };
 </script>
