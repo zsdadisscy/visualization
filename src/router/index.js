@@ -19,7 +19,8 @@ NProgress.inc(0.2)
 NProgress.configure({
   easing: 'ease', 
   speed: 500,
-  showSpinner: true,
+  // 关闭圆圈
+  showSpinner: false,
 })
 
 const routes = [
