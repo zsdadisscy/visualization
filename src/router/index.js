@@ -18,7 +18,7 @@ import { judge_online } from '@/user_function/user';
 NProgress.inc(0.2)
 NProgress.configure({
   easing: 'ease', 
-  speed: 500,
+  speed: 700,
   // 关闭圆圈
   showSpinner: false,
 })

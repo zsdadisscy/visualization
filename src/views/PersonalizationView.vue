@@ -137,7 +137,7 @@ export default {
                 {
                     title: '所需工作经验',
                     key: 'workexperience',
-                    dataIndex: 'salary',
+                    dataIndex: 'workexperience',
                 },
                 {
                     title: '学历要求',

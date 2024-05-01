@@ -104,11 +104,13 @@ export default {
             const myChart = this.$echarts.init(my_map,'vintage');
             const th = this.$echarts;
             const job = ref(route.params.job);
+            myChart.showLoading();
             $.ajax({
                 // 阿里可视化平台api
                 url:'https://geo.datav.aliyun.com/areas_v3/bound/geojson?code=100000_full',
                 type: 'get',
                 success (geoJson) {
+                    myChart.hideLoading();
                     let provinces = {};
                     // 判断是否存在数据
                     $.ajax({
@@ -159,20 +161,22 @@ export default {
                         }
                     })
 
-                console.log(provinces);
+                // console.log(provinces);
                 // 处理数据
+                let max_value = 0;
                 for (let i = 0; i < geoJson.features.length; i++) {
                     if (geoJson.features[i].properties.name in provinces) {
                         province_data.push({
                             name:geoJson.features[i].properties.name, value: provinces[geoJson.features[i].properties.name]
                         });
+                        max_value = Math.max(max_value, provinces[geoJson.features[i].properties.name]);
                     } else {
                         province_data.push({
                             name:geoJson.features[i].properties.name, value: 0
                         });
                     }
                 }
-                console.log(province_data);
+                // console.log(province_data);
                 myChart.hideLoading();
                 th.registerMap('china', geoJson);
 
@@ -213,10 +217,21 @@ export default {
                         textStyle:{color:"#fff"} //提示标签字体颜色
                         },
                     },
+                    toolbox: {
+                        show: true,
+                        orient: 'vertical',
+                        right: '1%',
+                        bottom: '6%',
+                        feature: {
+                        dataView: { readOnly: false },
+                        restore: {},
+                        saveAsImage: {}
+                        }
+                    },
                     visualMap: {
                         left: 'left',
                         min: 0,
-                        max: 300,
+                        max: max_value,
                         itemWidth: 30,  // 设置 visualMap 组件的宽度
                         itemHeight: 200,  // 设置 visualMap 组件的高度
                         bottom: '6%',
@@ -243,7 +258,7 @@ export default {
                         {
                         // 放大操作
                         roam: true, // 是否开启鼠标缩放和平移漫游
-                        zoom: 1.5, // 当前视角的缩放比例（地图的放大比例）
+                        zoom: 1.45, // 当前视角的缩放比例（地图的放大比例）
                          //鼠标划过的高亮设置；包括省份板块颜色和字体等
                         emphasis: {
                             itemStyle: {
