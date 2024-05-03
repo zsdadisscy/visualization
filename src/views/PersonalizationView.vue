@@ -8,17 +8,19 @@
             <p>为了能根据你的资料为你提供职业推荐</p>
             <p>建议你完善你的资料，否则我们无法提供数据</p>
         </a-modal>
-        <div class="table-container">
-            <a-table
-                :columns="columns"
-                :data-source="dataSource"
-            >
-            </a-table>
-        </div>  
-        
-        <div class='alert'>
-            <span>以下结果仅供参考,数据来源于前程无忧，一切以官网数据为准</span>
-        </div>
+        <a-spin :spinning="spinning" size="large" class="loading" tip="加载中...">
+            <div class="table-container" v-if="!spinning">
+                <a-table
+                    :columns="columns"
+                    :data-source="dataSource"
+                >
+                </a-table>
+            </div>  
+            
+            <div class='alert' v-if="!spinning">
+                <span>以下结果仅供参考,数据来源于前程无忧，一切以官网数据为准</span>
+            </div>
+        </a-spin>
     </MenuComponent>
 </template>
 <script>
@@ -37,6 +39,9 @@ export default {
     },
     setup() {
         
+        // 加载状态
+        const spinning = ref(true);
+
         const current = ref(1);
         const dataSource = ref([]);
         const store = useStore();
@@ -92,6 +97,7 @@ export default {
                                                 companyurl: resp.data[i][8],
                                             })
                                         }
+                                        spinning.value = false;
                                     }
                                 }
                         });
@@ -167,6 +173,8 @@ export default {
                 
             ];
 
+            
+
             return {
                 columns,
                 dataSource,
@@ -175,6 +183,7 @@ export default {
                 open,
                 handleOk,
                 handleCancel,
+                spinning,
             };
             
     },
@@ -198,6 +207,14 @@ export default {
 .table-container {
     max-height: 81vh;
     overflow-y: auto;
+}
+
+
+.loading {
+    position: absolute;
+    top: 50%;
+    left: 60%;
+    transform: translate(-50%, -50%);
 }
 
 </style>

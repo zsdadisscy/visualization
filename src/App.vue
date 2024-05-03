@@ -17,8 +17,9 @@ export default {
 </script>
 
 <style>
+/* 重写进度条颜色 */
 #nprogress .bar {
-  background: #4096ff !important;  /* 更改为你想要的颜色 */
+  background: #4096ff !important;  
 }
 
 </style>

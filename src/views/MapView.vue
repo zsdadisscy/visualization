@@ -104,13 +104,15 @@ export default {
             const myChart = this.$echarts.init(my_map,'vintage');
             const th = this.$echarts;
             const job = ref(route.params.job);
-            myChart.showLoading();
+            myChart.showLoading({
+                text : '加载中...', //加载时候的文本
+            });
             $.ajax({
                 // 阿里可视化平台api
                 url:'https://geo.datav.aliyun.com/areas_v3/bound/geojson?code=100000_full',
                 type: 'get',
                 success (geoJson) {
-                    myChart.hideLoading();
+                    
                     let provinces = {};
                     // 判断是否存在数据
                     $.ajax({
@@ -120,11 +122,12 @@ export default {
                                 'Content-Type': 'application/json',
                                 "Authorization": 'Bearer ' + store.state.user.access,
                         },
-                        async: false,
+                        // async: false,
                         data: JSON.stringify({
                             job: job.value
                         }),
                         success(resp) {
+                            // myChart.hideLoading();
                             if (resp.result === 'success') {
                                 open.value = false;
 
@@ -135,15 +138,145 @@ export default {
                                         'Content-Type': 'application/json',
                                         "Authorization": 'Bearer ' + store.state.user.access,
                                     },
-                                    async: false,
+                                    // async: false,
                                     data: JSON.stringify({
                                         job: job.value
                                     }),
                                     success(resp) {
-                                        console.log(resp);
+                                        // console.log(resp);
                                         if (resp.result === 'success') {
                                             provinces = resp.province_counts;
-                                            // console.log(provinces);
+                                            // 处理数据
+                                            let max_value = 0;
+                                            for (let i = 0; i < geoJson.features.length; i++) {
+                                                if (geoJson.features[i].properties.name in provinces) {
+                                                    province_data.push({
+                                                        name:geoJson.features[i].properties.name, value: provinces[geoJson.features[i].properties.name]
+                                                    });
+                                                    max_value = Math.max(max_value, provinces[geoJson.features[i].properties.name]);
+                                                } else {
+                                                    province_data.push({
+                                                        name:geoJson.features[i].properties.name, value: 0
+                                                    });
+                                                }
+                                            }
+                                            // console.log(province_data);
+                                            myChart.hideLoading();
+                                            th.registerMap('china', geoJson);
+
+                                            myChart.setOption(
+                                                (option = {
+                                                
+                                                title: {
+                                                    text: '职业招聘地区分布',
+                                                    left: 'center',
+                                                    top: '5%',
+                                                    textStyle: {
+                                                        fontSize: 24,  // 设置标题的字体大小
+                                                    },
+                                                },
+                                                tooltip: {
+                                                    trigger: 'item',
+                                                    tooltip: {
+                                                    // 鼠标移到图里面的浮动提示框
+                                                    // formatter详细配置： https://echarts.baidu.com/option.html#tooltip.formatter
+                                                    formatter(params, ticket, callback) {
+                                                    // params.data 就是series配置项中的data数据遍历
+                                                        let localValue, perf, downloadSpeep, usability, point;
+                                                        if (params.data) {
+                                                            localValue = params.data.value;
+                                                        } else {
+                                                        // 为了防止没有定义数据的时候报错写的
+                                                            localValue = 0;
+                                                        }
+                                                        let htmlStr = `
+                                                        <div style='font-size:18px;'> ${params.name}</div>
+                                                        <p style='text-align:left;margin-top:-10px;'>
+                                                        区域对应数据value：${localValue}<br/>
+                                                        </p>
+                                                    `;
+                                                        return htmlStr;
+                                                    },
+                                                    backgroundColor:"#ff7f50",//提示标签背景颜色
+                                                    textStyle:{color:"#fff"} //提示标签字体颜色
+                                                    },
+                                                },
+                                                toolbox: {
+                                                    show: true,
+                                                    orient: 'vertical',
+                                                    right: '1%',
+                                                    bottom: '6%',
+                                                    feature: {
+                                                    dataView: { readOnly: false },
+                                                    restore: {},
+                                                    saveAsImage: {}
+                                                    }
+                                                },
+                                                visualMap: {
+                                                    left: 'left',
+                                                    min: 0,
+                                                    max: max_value,
+                                                    itemWidth: 30,  // 设置 visualMap 组件的宽度
+                                                    itemHeight: 200,  // 设置 visualMap 组件的高度
+                                                    bottom: '6%',
+                                                    left: '1%',
+                                                    inRange: {
+                                                        color: [
+                                                        '#313695',
+                                                        '#4575b4',
+                                                        '#74add1',
+                                                        '#abd9e9',
+                                                        '#e0f3f8',
+                                                        '#ffffbf',
+                                                        '#fee090',
+                                                        '#fdae61',
+                                                        '#f46d43',
+                                                        '#d73027',
+                                                        '#a50026'
+                                                        ]
+                                                    },
+                                                    text: ['高', '低'],
+                                                    calculable: true
+                                                    },
+                                                series: [
+                                                    {
+                                                    // 放大操作
+                                                    roam: true, // 是否开启鼠标缩放和平移漫游
+                                                    zoom: 1.45, // 当前视角的缩放比例（地图的放大比例）
+                                                    //鼠标划过的高亮设置；包括省份板块颜色和字体等
+                                                    emphasis: {
+                                                        itemStyle: {
+                                                            areaColor: '#d0a3a3',
+                                                        },
+                                                        label: {
+                                                            show: true,
+                                                            color:"rgb(255,255,255)"
+                                                        }
+                                                    },
+                                                    center: [104.114129, 34.550339], 
+                                                    itemStyle: {
+                                                        // 地图区域的多边形 图形样式。
+                                                        borderColor: "rgba(0, 0, 0, 0.2)",
+                                                        emphasis: {
+                                                        // 高亮状态下的多边形和标签样式
+                                                        shadowBlur: 20,
+                                                        shadowColor: "rgba(0, 0, 0, 0.5)",
+                                                        },
+                                                    },
+                                                    name: '职业招聘地区分布',
+                                                    type: 'map',
+                                                    map: 'china',
+                                                    label: {
+                                                        show: true,
+                                                        
+                                                    },
+                                                    data: province_data
+                                                    
+                                                    }
+                                                    
+                                                ]
+                                                })
+                                            );
                                         } 
                                     },
                                     error() {
@@ -157,142 +290,13 @@ export default {
                             }
                         },
                         error() {
+                            myChart.hideLoading();
                             alert('系统错误');
                         }
                     })
 
                 // console.log(provinces);
-                // 处理数据
-                let max_value = 0;
-                for (let i = 0; i < geoJson.features.length; i++) {
-                    if (geoJson.features[i].properties.name in provinces) {
-                        province_data.push({
-                            name:geoJson.features[i].properties.name, value: provinces[geoJson.features[i].properties.name]
-                        });
-                        max_value = Math.max(max_value, provinces[geoJson.features[i].properties.name]);
-                    } else {
-                        province_data.push({
-                            name:geoJson.features[i].properties.name, value: 0
-                        });
-                    }
-                }
-                // console.log(province_data);
-                myChart.hideLoading();
-                th.registerMap('china', geoJson);
-
-                myChart.setOption(
-                    (option = {
-                       
-                    title: {
-                        text: '职业招聘地区分布',
-                        left: 'center',
-                        top: '5%',
-                        textStyle: {
-                            fontSize: 24,  // 设置标题的字体大小
-                        },
-                    },
-                    tooltip: {
-                        trigger: 'item',
-                        tooltip: {
-                        // 鼠标移到图里面的浮动提示框
-                        // formatter详细配置： https://echarts.baidu.com/option.html#tooltip.formatter
-                        formatter(params, ticket, callback) {
-                        // params.data 就是series配置项中的data数据遍历
-                            let localValue, perf, downloadSpeep, usability, point;
-                            if (params.data) {
-                                localValue = params.data.value;
-                            } else {
-                            // 为了防止没有定义数据的时候报错写的
-                                localValue = 0;
-                            }
-                            let htmlStr = `
-                            <div style='font-size:18px;'> ${params.name}</div>
-                            <p style='text-align:left;margin-top:-10px;'>
-                            区域对应数据value：${localValue}<br/>
-                            </p>
-                        `;
-                            return htmlStr;
-                        },
-                        backgroundColor:"#ff7f50",//提示标签背景颜色
-                        textStyle:{color:"#fff"} //提示标签字体颜色
-                        },
-                    },
-                    toolbox: {
-                        show: true,
-                        orient: 'vertical',
-                        right: '1%',
-                        bottom: '6%',
-                        feature: {
-                        dataView: { readOnly: false },
-                        restore: {},
-                        saveAsImage: {}
-                        }
-                    },
-                    visualMap: {
-                        left: 'left',
-                        min: 0,
-                        max: max_value,
-                        itemWidth: 30,  // 设置 visualMap 组件的宽度
-                        itemHeight: 200,  // 设置 visualMap 组件的高度
-                        bottom: '6%',
-                        left: '1%',
-                        inRange: {
-                            color: [
-                            '#313695',
-                            '#4575b4',
-                            '#74add1',
-                            '#abd9e9',
-                            '#e0f3f8',
-                            '#ffffbf',
-                            '#fee090',
-                            '#fdae61',
-                            '#f46d43',
-                            '#d73027',
-                            '#a50026'
-                            ]
-                        },
-                        text: ['高', '低'],
-                        calculable: true
-                        },
-                    series: [
-                        {
-                        // 放大操作
-                        roam: true, // 是否开启鼠标缩放和平移漫游
-                        zoom: 1.45, // 当前视角的缩放比例（地图的放大比例）
-                         //鼠标划过的高亮设置；包括省份板块颜色和字体等
-                        emphasis: {
-                            itemStyle: {
-                                areaColor: '#d0a3a3',
-                            },
-                            label: {
-                                show: true,
-                                color:"rgb(255,255,255)"
-                            }
-                        },
-                        center: [104.114129, 34.550339], 
-                        itemStyle: {
-                            // 地图区域的多边形 图形样式。
-                            borderColor: "rgba(0, 0, 0, 0.2)",
-                            emphasis: {
-                            // 高亮状态下的多边形和标签样式
-                            shadowBlur: 20,
-                            shadowColor: "rgba(0, 0, 0, 0.5)",
-                            },
-                        },
-                        name: '职业招聘地区分布',
-                        type: 'map',
-                        map: 'china',
-                        label: {
-                            show: true,
-                            
-                        },
-                        data: province_data
-                        
-                        }
-                        
-                    ]
-                    })
-                );
+                
                 }
             });
             

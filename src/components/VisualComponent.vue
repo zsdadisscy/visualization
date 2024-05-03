@@ -92,7 +92,7 @@ export default {
                                 job: props.job
                             }),
                             success(resp) {
-                                console.log(resp);
+                                // console.log(resp);
                                 if (resp.result === 'success') {
                                     // console.log(resp);
                                     // 不能直接赋值，否则会出现数据不显示的问题，等价为一个副本

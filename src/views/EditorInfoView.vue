@@ -113,7 +113,7 @@ export default {
             education: store.state.user.education,
             avatar: store.state.user.avatar,
         });
-        console.log(formState);
+        // console.log(formState);
         const headers = {
             'Authorization': 'Bearer ' + store.state.user.access,
         }
@@ -230,7 +230,7 @@ export default {
                     })
                 })
                 .catch(error => {
-                    console.log('error', error);
+                    // console.log('error', error);
                     alert('修改失败，请稍后再试');
                 });
   
