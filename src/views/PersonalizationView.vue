@@ -18,7 +18,7 @@
             </div>  
             
             <div class='alert' v-if="!spinning">
-                <span>以下结果仅供参考,数据来源于前程无忧，一切以官网数据为准</span>
+                <span>以下结果仅供参考，数据来源于前程无忧，一切以官网数据为准</span>
             </div>
         </a-spin>
     </MenuComponent>
@@ -164,6 +164,7 @@ export default {
                     title: '职位官网',
                     key: 'url',
                     dataIndex: 'url',
+                    
                 },
                 {
                     title: '公司官网',
