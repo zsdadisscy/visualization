@@ -50,7 +50,7 @@ export default {
         const handleOk = () => {
             // 不存在登记信息
             $.ajax({
-                url: 'http://47.105.178.110:8000/data/register_data',
+                url: 'http://127.0.0.1:8000/data/register_data',
                 type: 'post',
                 headers: {
                     'Content-Type': 'application/json',
@@ -116,7 +116,7 @@ export default {
                     let provinces = {};
                     // 判断是否存在数据
                     $.ajax({
-                        url: 'http://47.105.178.110:8000/data/judge_data',
+                        url: 'http://127.0.0.1:8000/data/judge_data',
                         type: 'post',
                         headers: {
                                 'Content-Type': 'application/json',
@@ -132,7 +132,7 @@ export default {
                                 open.value = false;
 
                                 $.ajax({
-                                    url: 'http://47.105.178.110:8000/data/province_data',
+                                    url: 'http://127.0.0.1:8000/data/province_data',
                                     type: 'post',
                                     headers: {
                                         'Content-Type': 'application/json',

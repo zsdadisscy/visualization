@@ -51,7 +51,7 @@
                         list-type="picture-card"
                         class="avatar-uploader"
                         :show-upload-list="false"
-                        action="http://47.105.178.110:8000/user/upload_avatar"
+                        action="http://127.0.0.1:8000/user/upload_avatar"
                         :maxCount="1"
                         :method="post"
                         :headers = headers
@@ -181,7 +181,7 @@ export default {
                 .then(() => {
                     let {name, age, major, gender, interest_position, interest_city, education} = toRaw(formState);
                     $.ajax({
-                        url: 'http://47.105.178.110:8000/user/mod_info',
+                        url: 'http://127.0.0.1:8000/user/mod_info',
                         type: 'post',
                         headers: {
                             'Content-Type': 'application/json',
@@ -200,7 +200,7 @@ export default {
                             if (resp.result === 'success') {
                                 // 修改成功后，更新store中的数据
                                 $.ajax ({
-                                    url: 'http://47.105.178.110:8000/user/get_info',
+                                    url: 'http://127.0.0.1:8000/user/get_info',
                                     type: 'GET',
                                     headers: {
                                         'Authorization': 'Bearer ' + store.state.user.access,

@@ -59,7 +59,7 @@ export default {
         };
 
         $.ajax({
-            url: "http://47.105.178.110:8000/user/get_status",
+            url: "http://127.0.0.1:8000/user/get_status",
             type: "get",
             headers: {
                 'Authorization': 'Bearer ' + store.state.user.access,
@@ -74,7 +74,7 @@ export default {
                     else {
                     // 获取推荐数据
                     $.ajax({
-                            url: 'http://47.105.178.110:8000/recommend/recommend_data',
+                            url: 'http://127.0.0.1:8000/recommend/recommend_data',
                                 type: 'get',
                                 headers: {
                                     "Authorization": 'Bearer ' + store.state.user.access,

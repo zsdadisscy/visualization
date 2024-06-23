@@ -107,7 +107,7 @@ export default {
         const next = () => {
             if (current.value === 0) {
                 $.ajax({
-                    url: "http://47.105.178.110:8000/user/judge_user",
+                    url: "http://.105.178.110:8000/user/judge_user",
                     type: "post",
                     headers: {
                         'Content-Type': 'application/json',
@@ -132,7 +132,7 @@ export default {
             }
             else if (current.value === 1) {
                 $.ajax({
-                    url: "http://47.105.178.110:8000/user/validation_secure",
+                    url: "http://127.0.0.1:8000/user/validation_secure",
                     type: "post",
                     headers: {
                         'Content-Type': 'application/json',
@@ -177,7 +177,7 @@ export default {
                 return;
             }
             $.ajax({
-                url: "http://47.105.178.110:8000/user/secure_passwd",
+                url: "http://127.0.0.1:8000/user/secure_passwd",
                 type: 'post',
                 headers: {
                     'Content-Type': 'application/json',

@@ -124,7 +124,7 @@ export default {
         const handleFinish = values => {
             let { old_pass, new_pass, checkPass } = values;
             $.ajax({
-                url: 'http://47.105.178.110:8000/user/mod_passwd',
+                url: 'http://127.0.0.1:8000/user/mod_passwd',
                 type: 'post',
                 headers: {
                     'Content-Type': 'application/json',

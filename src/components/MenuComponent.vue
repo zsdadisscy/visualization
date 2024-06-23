@@ -154,7 +154,7 @@ export default {
     const ser_value = ref('');
     const onSearch = searchValue => {
       $.ajax({
-                url: 'http://47.105.178.110:8000/data/judge_data',
+                url: 'http://127.0.0.1:8000/data/judge_data',
                 type: 'post',
                 headers: {
                         'Content-Type': 'application/json',
@@ -172,7 +172,7 @@ export default {
                         ser_res.value = 1;
                          // 不存在登记信息
                         $.ajax({
-                            url: 'http://47.105.178.110:8000/data/register_data',
+                            url: 'http://127.0.0.1:8000/data/register_data',
                             type: 'post',
                             headers: {
                                 'Content-Type': 'application/json',

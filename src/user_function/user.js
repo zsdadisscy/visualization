@@ -29,7 +29,7 @@ function judge_online() {
   let suc = false;
   if (store.state.user.is_login) {
     $.ajax({
-      url: "http://47.105.178.110:8000/user/judge_online",
+      url: "http://127.0.0.1:8000/user/judge_online",
       type: "get",
       // 关闭异步，防止返回前执行后续代码
       async: false,

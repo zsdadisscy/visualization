@@ -124,7 +124,7 @@ setup() {
         if (username && password && confirm_password && password_question && password_answer) {
 
             $.ajax({
-                url: 'http://47.105.178.110:8000/user/register',
+                url: 'http://127.0.0.1:8000/user/register',
                 type: 'post',
                 data: JSON.stringify({
                     username: username,

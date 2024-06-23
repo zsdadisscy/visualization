@@ -66,7 +66,7 @@ const ModeuleUser = {
         // 事件，数据
         login(context, data) {
             $.ajax({
-                url: 'http://47.105.178.110:8000/user/login',
+                url: 'http://127.0.0.1:8000/user/login',
                 type: 'POST',
                 data : JSON.stringify({
                     username: data.username,
@@ -81,7 +81,7 @@ const ModeuleUser = {
                         // 定时函数
                         setInterval(() => {
                             $.ajax({
-                                url: 'http://47.105.178.110:8000/user/refresh',
+                                url: 'http://127.0.0.1:8000/user/refresh',
                                 type: 'post',
                                 
                                 headers: {
@@ -95,7 +95,7 @@ const ModeuleUser = {
                             });
                         }, 55 * 60 * 1000);
                         $.ajax ({
-                            url: 'http://47.105.178.110:8000/user/get_info',
+                            url: 'http://127.0.0.1:8000/user/get_info',
                             type: 'GET',
                             headers: {
                                 'Authorization': 'Bearer ' + access,

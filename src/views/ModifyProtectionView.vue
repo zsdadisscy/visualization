@@ -54,7 +54,7 @@ export default {
         });
         
         $.ajax({
-            url: 'http://47.105.178.110:8000/user/get_secure',
+            url: 'http://127.0.0.1:8000/user/get_secure',
             type: 'get',
             headers: {
                 'Authorization': 'Bearer ' + store.state.user.access,
@@ -120,7 +120,7 @@ export default {
         };
         const handleFinish = values => {
             $.ajax({
-                url: 'http://47.105.178.110:8000/user/mod_secure',
+                url: 'http://127.0.0.1:8000/user/mod_secure',
                 type: 'post',
                 headers: {
                     'Authorization': 'Bearer ' + store.state.user.access,
